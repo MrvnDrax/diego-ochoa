@@ -1,0 +1,102 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+import WhatsAppIcon from '@components/brand/WhatsAppIcon.astro';
+import ContentSection from '@components/patterns/ContentSection.astro';
+import FaqAccordion from '@components/patterns/FaqAccordion.astro';
+import Button from '@components/ui/Button.astro';
+import { generalWhatsAppHref } from '@data/whatsapp-messages';
+import { createFaqQuestionSchemas } from '@data/structured-data';
+import SiteLayout from '@layouts/SiteLayout.astro';
+
+interface Props {
+  page: CollectionEntry<'pages'>;
+}
+
+const { page }: Props = Astro.props;
+const faqEntries = await getCollection('faqs');
+const faqQuestionSchemas = createFaqQuestionSchemas(
+  faqEntries.map((faqEntry) => ({
+    question: faqEntry.data.question,
+    answer: faqEntry.body ?? '',
+  })),
+);
+---
+
+<SiteLayout
+  title={page.data.title}
+  description={page.data.description}
+  noindex={page.data.noindex}
+  pageType="FAQPage"
+  mainEntity={faqQuestionSchemas}
+>
+  <ContentSection
+    id="preguntas-frecuentes-introduccion"
+    eyebrow={page.data.eyebrow}
+    heading={page.data.heading}
+    description={page.data.intro}
+    level={1}
+    tone="brand-subtle"
+    spacing="default"
+    layout="compact"
+    align="center"
+    eyebrowAlign="center"
+    class="faq-page__intro"
+  />
+
+  <FaqAccordion id="preguntas-frecuentes" />
+
+  <ContentSection
+    id="orientacion-personalizada"
+    heading="¿Tu duda no aparece aquí?"
+    description="Escríbenos para explicar brevemente tu gestión y la información que ya tienes."
+    tone="strong"
+    spacing="large"
+    layout="compact"
+    align="center"
+    eyebrowAlign="center"
+    class="faq-page__cta"
+  >
+    <Button
+      href={generalWhatsAppHref}
+      target="_blank"
+      variant="whatsapp"
+      ariaLabel="Preguntar por WhatsApp a Diego Ochoa"
+    >
+      <WhatsAppIcon slot="icon-start" />
+      Preguntar por WhatsApp
+    </Button>
+  </ContentSection>
+</SiteLayout>
+
+<style>
+  :global(.faq-page__intro .content-section__header) {
+    max-width: 43rem;
+    justify-items: center;
+    text-align: center;
+  }
+
+  :global(.faq-page__cta .content-section__content) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-5);
+  }
+
+  .faq-page__cta :global(.button) {
+    width: min(100%, 22.5rem);
+  }
+
+  @media (min-width: 48rem) {
+    :global(.faq-page__intro .content-section__container),
+    :global(.faq-page__cta .content-section__container) {
+      padding-block: var(--spacing-16);
+    }
+  }
+
+  @media (min-width: 75rem) {
+    :global(.faq-page__intro .content-section__container) {
+      padding-block: var(--spacing-20);
+    }
+  }
+</style>

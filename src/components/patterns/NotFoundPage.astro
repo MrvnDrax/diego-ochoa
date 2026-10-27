@@ -1,0 +1,261 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+import Button from '@components/ui/Button.astro';
+import Container from '@components/ui/Container.astro';
+import Icon from '@components/ui/Icon.astro';
+import SiteLayout from '@layouts/SiteLayout.astro';
+
+interface Props {
+  page: CollectionEntry<'pages'>;
+}
+
+const { page }: Props = Astro.props;
+const actions = page.data.actions ?? [];
+const links = page.data.links ?? [];
+---
+
+<SiteLayout
+  title={page.data.title}
+  description={page.data.description}
+  canonicalPath="/404/"
+  noindex={page.data.noindex}
+  pageType="WebPage"
+  mainClass="not-found-page"
+>
+  <section class="section not-found-hero" aria-labelledby="not-found-title">
+    <Container class="not-found-hero__inner">
+      <div class="not-found-hero__content">
+        <p class="not-found-hero__eyebrow">{page.data.eyebrow}</p>
+        <h1 id="not-found-title">{page.data.heading}</h1>
+        <p class="not-found-hero__intro">{page.data.intro}</p>
+
+        <div class="not-found-hero__actions">
+          {actions.map((action) => (
+            <Button href={action.href} variant={action.variant}>
+              {action.label}
+              <Icon slot="icon-end" name="arrow-right" size="compact" />
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      <div class="not-found-code" aria-hidden="true">
+        <span>4</span>
+        <div class="not-found-code__mark">
+          <Icon name="stethoscope" size="xlarge" />
+        </div>
+        <span>4</span>
+      </div>
+    </Container>
+  </section>
+
+  <section class="section not-found-links" aria-labelledby="useful-links-title">
+    <Container>
+      <header class="not-found-links__header">
+        <p>ENCUENTRA TU CAMINO</p>
+        <h2 id="useful-links-title">Quizá buscabas alguna de estas opciones</h2>
+      </header>
+
+      <div class="not-found-links__grid">
+        {links.map((link) => (
+          <a class="not-found-card" href={link.href}>
+            <span class="not-found-card__icon" aria-hidden="true">
+              <Icon name={link.icon} size="large" />
+            </span>
+            <span class="not-found-card__content">
+              <strong>{link.label}</strong>
+              <span>{link.description}</span>
+            </span>
+            <Icon name="arrow-right" size="compact" />
+          </a>
+        ))}
+      </div>
+
+      <p class="not-found-links__note">
+        Si necesitas atención urgente, acude al servicio de urgencias más
+        cercano o comunícate con los servicios de emergencia de tu localidad.
+      </p>
+    </Container>
+  </section>
+</SiteLayout>
+
+<style>
+  .not-found-hero {
+    color: var(--color-text-inverse);
+    background: var(--color-action-primary);
+  }
+
+  .not-found-hero__inner {
+    display: grid;
+    align-items: center;
+    gap: var(--spacing-10);
+    padding-block: var(--spacing-16);
+  }
+
+  .not-found-hero__content {
+    display: grid;
+    justify-items: start;
+    gap: var(--spacing-4);
+  }
+
+  .not-found-hero__eyebrow,
+  .not-found-links__header p {
+    color: var(--color-brand-clinical-400);
+    font-size: var(--font-size-eyebrow);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-eyebrow);
+  }
+
+  .not-found-hero h1 {
+    max-width: 15ch;
+    font-size: var(--font-size-heading-1-mobile);
+    line-height: var(--line-height-heading-1-mobile);
+  }
+
+  .not-found-hero__intro {
+    max-width: 38rem;
+    color: var(--color-brand-clinical-200);
+    font-size: var(--font-size-body-large);
+    line-height: var(--line-height-body-large);
+  }
+
+  .not-found-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-3);
+    margin-top: var(--spacing-2);
+  }
+
+  .not-found-code {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-inverse);
+    font-family: var(--font-family-heading);
+    font-size: clamp(6rem, 24vw, 12rem);
+    font-weight: var(--font-weight-bold);
+    line-height: 0.8;
+    letter-spacing: -0.08em;
+    opacity: 0.96;
+  }
+
+  .not-found-code__mark {
+    display: grid;
+    width: 0.58em;
+    height: 0.58em;
+    margin-inline: 0.05em;
+    place-items: center;
+    border: 2px solid var(--color-brand-clinical-400);
+    border-radius: var(--radius-full);
+    color: var(--color-text-primary);
+    background: var(--color-background-brand-subtle);
+  }
+
+  .not-found-links {
+    padding-block: var(--spacing-12) var(--spacing-20);
+    background: var(--color-background-subtle);
+  }
+
+  .not-found-links__header {
+    display: grid;
+    max-width: 42rem;
+    gap: var(--spacing-3);
+  }
+
+  .not-found-links__header h2 {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-heading-2-mobile);
+    line-height: var(--line-height-heading-2-mobile);
+  }
+
+  .not-found-links__grid {
+    display: grid;
+    gap: var(--spacing-4);
+    margin-top: var(--spacing-8);
+  }
+
+  .not-found-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--spacing-4);
+    padding: var(--spacing-5);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-xl);
+    color: var(--color-text-primary);
+    background: var(--color-background-canvas);
+    text-decoration: none;
+    transition:
+      border-color var(--motion-duration-fast),
+      transform var(--motion-duration-fast);
+  }
+
+  .not-found-card:hover {
+    border-color: var(--color-border-strong);
+    transform: translateY(-2px);
+  }
+
+  .not-found-card__icon {
+    display: grid;
+    width: 3.25rem;
+    height: 3.25rem;
+    place-items: center;
+    border-radius: var(--radius-full);
+    color: var(--color-text-primary);
+    background: var(--color-background-brand-subtle);
+  }
+
+  .not-found-card__content {
+    display: grid;
+    gap: var(--spacing-1);
+  }
+
+  .not-found-card__content strong {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-heading-4-mobile);
+  }
+
+  .not-found-card__content span {
+    color: var(--color-text-secondary);
+  }
+
+  .not-found-links__note {
+    max-width: 48rem;
+    margin-top: var(--spacing-8);
+    padding: var(--spacing-4) var(--spacing-5);
+    border-left: 3px solid var(--color-brand-clinical-400);
+    color: var(--color-text-primary);
+    background: var(--color-background-brand-subtle);
+  }
+
+  @media (min-width: 48rem) {
+    .not-found-hero__inner {
+      grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.85fr);
+      padding-block: var(--spacing-20);
+    }
+
+    .not-found-hero h1 {
+      font-size: var(--font-size-heading-1-desktop);
+      line-height: var(--line-height-heading-1-desktop);
+    }
+
+    .not-found-links__header h2 {
+      font-size: var(--font-size-heading-2-desktop);
+      line-height: var(--line-height-heading-2-desktop);
+    }
+
+    .not-found-links__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .not-found-card {
+      grid-template-columns: 1fr auto;
+      align-items: start;
+    }
+
+    .not-found-card__icon {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

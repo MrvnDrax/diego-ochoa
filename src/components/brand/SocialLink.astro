@@ -1,0 +1,138 @@
+---
+import facebookIcon from '@assets/social/facebook.svg';
+import instagramIcon from '@assets/social/instagram.svg';
+import tiktokIcon from '@assets/social/tiktok.svg';
+import youtubeIcon from '@assets/social/youtube.svg';
+
+import Icon from '@components/ui/Icon.astro';
+
+import type { SocialLink as SocialLinkData } from '@data/social-links';
+
+interface Props {
+  link: SocialLinkData;
+  class?: string;
+}
+
+const { link, class: className }: Props = Astro.props;
+
+const socialIcons = {
+  instagram: instagramIcon,
+  facebook: facebookIcon,
+  tiktok: tiktokIcon,
+  youtube: youtubeIcon,
+} as const;
+
+const socialIcon = socialIcons[link.platform];
+---
+
+<a
+  href={link.href}
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label={`Abrir ${link.label}: ${link.handle} en una pestaña nueva`}
+  class:list={['social-link', className]}
+>
+  <span class="social-link__icon-column" aria-hidden="true">
+    <span class="social-link__icon-surface">
+      <img
+        src={socialIcon.src}
+        width="40"
+        height="40"
+        alt=""
+        class="social-link__icon"
+      />
+    </span>
+  </span>
+
+  <span class="social-link__content">
+    <span class="social-link__label">{link.label}</span>
+
+    <span class="social-link__handle">{link.handle}</span>
+  </span>
+
+  <Icon
+    name="move-up-right"
+    size="compact"
+    class="social-link__external-icon"
+  />
+</a>
+
+<style>
+  .social-link {
+    display: grid;
+    grid-template-columns: 3.75rem minmax(0, 1fr) 1.25rem;
+    align-items: center;
+    width: 100%;
+    min-height: 4.625rem;
+    padding: var(--spacing-3) var(--spacing-4);
+    gap: var(--spacing-3);
+    overflow: hidden;
+    color: var(--color-text-inverse);
+    text-decoration: none;
+    border: 2px solid var(--color-border-default);
+    border-radius: var(--radius-lg);
+    background-color: transparent;
+    transition:
+      border-color var(--motion-duration-fast),
+      background-color var(--motion-duration-fast);
+  }
+
+  .social-link:hover {
+    border-color: var(--color-border-strong);
+    background-color: var(--color-action-primary-hover);
+  }
+
+  .social-link__icon-column {
+    display: grid;
+    width: 3.75rem;
+    place-items: center;
+  }
+
+  .social-link__icon-surface {
+    display: grid;
+    width: 3.125rem;
+    height: 3.125rem;
+    padding: 0.3125rem;
+    border-radius: var(--radius-md);
+    background-color: var(--color-background-canvas);
+    place-items: center;
+  }
+
+  .social-link__icon {
+    display: block;
+    width: 2.5rem;
+    height: 2.5rem;
+    object-fit: contain;
+  }
+
+  .social-link__content {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .social-link__label {
+    overflow: hidden;
+    font-size: var(--font-size-label);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-label);
+    letter-spacing: var(--letter-spacing-label);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .social-link__handle {
+    overflow: hidden;
+    font-size: var(--font-size-caption);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-caption);
+    letter-spacing: var(--letter-spacing-caption);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .social-link__external-icon {
+    justify-self: end;
+  }
+</style>

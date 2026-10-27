@@ -1,0 +1,97 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import AdvertisingSection from '@components/advertising/AdvertisingSection.astro';
+import FloatingAdvertising from '@components/advertising/FloatingAdvertising.astro';
+import ContentSection from '@components/patterns/ContentSection.astro';
+import CtaSection from '@components/patterns/CtaSection.astro';
+import HomeHero from '@components/patterns/HomeHero.astro';
+import HomeDoctorStory from '@components/patterns/HomeDoctorStory.astro';
+import ConsultationJourney from '@components/patterns/ConsultationJourney.astro';
+import HomeQuestions from '@components/patterns/HomeQuestions.astro';
+import FeaturedServicesSection from '@components/patterns/FeaturedServicesSection.astro';
+import HomeServicesCta from '@components/patterns/HomeServicesCta.astro';
+import InsuranceSection from '@components/patterns/InsuranceSection.astro';
+import LocationExplorer from '@components/patterns/LocationExplorer.astro';
+import TestimonialsSection from '@components/patterns/TestimonialsSection.astro';
+import SiteLayout from '@layouts/SiteLayout.astro';
+interface Props {
+  page: CollectionEntry<'pages'>;
+}
+const { page }: Props = Astro.props;
+---
+
+<SiteLayout
+  mainClass="home-with-advertising home-remodeled"
+  title={page.data.title}
+  description={page.data.description}
+  noindex={page.data.noindex}
+>
+  <HomeHero />
+  <FeaturedServicesSection />
+  <HomeServicesCta />
+  <HomeDoctorStory />
+  <TestimonialsSection />
+  <ConsultationJourney />
+  <ContentSection
+    id="ubicaciones"
+    eyebrow="Tabasco · Chiapas · Veracruz"
+    heading="Conoce cómo iniciar tu gestión."
+    description="Inicia por WhatsApp y confirma cómo podemos atender tu gestión en tu estado. La modalidad y el punto de encuentro dependen del trámite."
+    tone="canvas"
+    spacing="large"
+    align="start"
+    eyebrowAlign="start"
+    class="home-locations"
+  >
+    <LocationExplorer />
+  </ContentSection>
+  <InsuranceSection />
+  <div class="home-campaigns">
+    <div class="container home-campaigns__heading">
+      <p>Opciones para tu proyecto</p>
+      <h2>Explora cómo podemos ayudarte.</h2>
+    </div>
+    <AdvertisingSection placement="primary" />
+    <AdvertisingSection placement="services" />
+  </div>
+  <HomeQuestions />
+  <CtaSection class="home-final-booking" light />
+  <FloatingAdvertising />
+</SiteLayout>
+<style>
+  .home-campaigns {
+    background: #fff;
+    padding-top: 3rem;
+    border-top: 1px solid #d7e2ed;
+  }
+  .home-campaigns__heading p {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #53677d;
+    margin-bottom: 0.7rem;
+  }
+  .home-campaigns__heading h2 {
+    font-size: clamp(1.8rem, 2.5vw, 2.4rem);
+    font-weight: 500;
+    line-height: 1.2;
+    color: #1b325f;
+  }
+  .home-campaigns :global(.doctor-ad-section--primary) {
+    padding-block: 1.5rem 2.5rem;
+  }
+  .home-campaigns :global(.ad-banner-group) {
+    padding-top: 0;
+  }
+  .home-campaigns :global(.ad-banner.ad-banner--square) {
+    min-height: 24rem;
+  }
+  .home-campaigns :global(.ad-banner--square .ad-banner__content) {
+    min-height: 24rem;
+  }
+  .home-campaigns :global(.ad-banner) {
+    border-radius: var(--radius-lg);
+    box-shadow: none;
+  }
+</style>

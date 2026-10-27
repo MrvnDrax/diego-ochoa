@@ -1,0 +1,235 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+import Eyebrow from '@components/ui/Eyebrow.astro';
+import Icon from '@components/ui/Icon.astro';
+import Container from '@components/ui/Container.astro';
+import Section from '@components/ui/Section.astro';
+
+interface Props {
+  image: ImageMetadata;
+  imageAlt: string;
+}
+
+const { image, imageAlt }: Props = Astro.props;
+
+const carePoints = [
+  {
+    title: 'Escuchar tu objetivo',
+    description:
+      'Entender qué quieres lograr y en qué etapa te encuentras.',
+    icon: 'message-circle',
+  },
+  {
+    title: 'Ordenar tus opciones',
+    description:
+      'Revisar las rutas disponibles y los documentos que podrían solicitarse.',
+    icon: 'check',
+  },
+  {
+    title: 'Aclarar el siguiente paso',
+    description:
+      'Identificar pendientes y conocer la siguiente etapa del proceso.',
+    icon: 'route',
+  },
+] as const;
+---
+
+<Section
+  id="enfoque-de-atencion"
+  tone="warm"
+  spacing="compact"
+  class="patient-care-section"
+>
+  <Container class="patient-care-section__container">
+    <Image
+      class="patient-care-section__image"
+      src={image}
+      alt={imageAlt}
+      loading="lazy"
+    />
+
+    <div class="patient-care-section__content">
+      <Eyebrow>Atención a tu proyecto</Eyebrow>
+
+      <h2>Escuchar, explicar y acompañar</h2>
+
+      <p class="patient-care-section__intro">
+        Una conversación útil debe darte claridad sobre tu situación, las alternativas que podrías explorar y los pasos que siguen.
+      </p>
+
+      <div class="patient-care-section__points">
+        {carePoints.map((point) => (
+          <article class="patient-care-section__point">
+            <span class="patient-care-section__point-icon" aria-hidden="true">
+              <Icon
+                name={point.icon}
+                responsive
+                strokeWidth={2}
+                class="patient-care-section__point-symbol"
+              />
+            </span>
+
+            <h3>{point.title}</h3>
+
+            <p>{point.description}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </Container>
+</Section>
+
+<style>
+  .patient-care-section__container {
+    display: grid;
+    gap: var(--spacing-8);
+  }
+
+  .patient-care-section__image {
+    width: 100%;
+    height: clamp(18rem, 72vw, 24rem);
+    border-radius: var(--radius-xl);
+    object-fit: cover;
+  }
+
+  .patient-care-section__content {
+    display: grid;
+    align-content: center;
+    gap: var(--spacing-4);
+  }
+
+  .patient-care-section__content h2,
+  .patient-care-section__point h3 {
+    margin: 0;
+    color: var(--color-text-primary);
+    font-family: var(--font-family-heading);
+  }
+
+  .patient-care-section__content h2 {
+    font-size: var(--font-size-heading-2-mobile);
+    line-height: var(--line-height-heading-2-mobile);
+  }
+
+  .patient-care-section__intro,
+  .patient-care-section__point p {
+    margin: 0;
+    color: var(--color-text-secondary);
+  }
+
+  .patient-care-section__intro {
+    font-size: var(--font-size-body-large);
+    line-height: var(--line-height-body-large);
+  }
+
+  .patient-care-section__points {
+    display: grid;
+    gap: var(--spacing-3);
+  }
+
+  .patient-care-section__point {
+    display: grid;
+    justify-items: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-4);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-lg);
+    background-color: rgb(255 255 255 / 64%);
+    text-align: center;
+  }
+
+  .patient-care-section__point-icon {
+    display: grid;
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--radius-full);
+    color: var(--color-text-primary);
+    background-color: var(--color-background-brand-subtle);
+    place-items: center;
+  }
+
+  .patient-care-section__point-icon
+    :global(.patient-care-section__point-symbol) {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  .patient-care-section__point h3 {
+    font-size: var(--font-size-body-base);
+    line-height: var(--line-height-body-base);
+  }
+
+  .patient-care-section__point p {
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-body-small);
+  }
+
+  @media (min-width: 48rem) {
+    .patient-care-section__container {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: center;
+      gap: var(--spacing-10);
+    }
+
+    .patient-care-section__image {
+      height: 25rem;
+    }
+
+    .patient-care-section__point-icon {
+      width: 3.5rem;
+      height: 3.5rem;
+    }
+
+    .patient-care-section__point-icon
+      :global(.patient-care-section__point-symbol) {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+
+  @media (min-width: 60rem) and (max-width: 74.9375rem) {
+    .patient-care-section__points {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .patient-care-section__point:last-child {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (min-width: 75rem) {
+    .patient-care-section__container {
+      grid-template-columns: minmax(0, 591fr) minmax(0, 545fr);
+      gap: var(--spacing-16);
+    }
+
+    .patient-care-section__image {
+      height: 26rem;
+    }
+
+    .patient-care-section__points {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .patient-care-section__point:last-child {
+      grid-column: auto;
+    }
+
+    .patient-care-section__point-icon {
+      width: 3.75rem;
+      height: 3.75rem;
+    }
+
+    .patient-care-section__point-icon
+      :global(.patient-care-section__point-symbol) {
+      width: 2.25rem;
+      height: 2.25rem;
+    }
+
+    .patient-care-section__content h2 {
+      font-size: var(--font-size-heading-2-desktop);
+      line-height: var(--line-height-heading-2-desktop);
+    }
+  }
+</style>

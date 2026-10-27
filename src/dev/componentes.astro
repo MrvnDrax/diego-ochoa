@@ -1,0 +1,76 @@
+---
+import ComponentPreview from '@components/dev/ComponentPreview.astro';
+import SiteHeader from '@components/navigation/SiteHeader.astro';
+import MobileContactBar from '@components/navigation/MobileContactBar.astro';
+import DoctorProfileHero from '@components/patterns/DoctorProfileHero.astro';
+import HomeHero from '@components/patterns/HomeHero.astro';
+import TestimonialsSection from '@components/patterns/TestimonialsSection.astro';
+import DoctorChannelsSection from '@components/patterns/DoctorChannelsSection.astro';
+import ProfessionalCredentials from '@components/patterns/ProfessionalCredentials.astro';
+import FeaturedServicesSection from '@components/patterns/FeaturedServicesSection.astro';
+import InsuranceSection from '@components/patterns/InsuranceSection.astro';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import SiteFooter from '@components/navigation/SiteFooter.astro';
+---
+
+<BaseLayout
+  title="Laboratorio de componentes"
+  description="Entorno interno para desarrollar y validar el sistema visual del sitio."
+  noindex={true}
+>
+  <SiteHeader />
+  <main class="workbench">
+    <header class="container workbench__header">
+      <p>Entorno interno · /dev/componentes</p>
+
+      <h1>Laboratorio de componentes</h1>
+
+      <p>
+        Esta página está reservada para incorporar tokens y componentes
+        aprobados desde Figma. Los estilos actuales son únicamente una base
+        técnica neutral.
+      </p>
+    </header>
+
+    <HomeHero />
+    <DoctorProfileHero />
+    <ProfessionalCredentials />
+    <DoctorChannelsSection />
+    <TestimonialsSection />
+    <FeaturedServicesSection />
+    <InsuranceSection />
+    <ComponentPreview />
+  </main>
+  <SiteFooter />
+  <MobileContactBar />
+</BaseLayout>
+
+<style>
+  .workbench {
+    padding-block-start: clamp(2rem, 8vw, 5rem);
+  }
+
+  .workbench__header {
+    display: grid;
+    gap: 1rem;
+    max-width: 48rem;
+    margin-block-end: clamp(2rem, 8vw, 5rem);
+  }
+
+  .workbench__header > * {
+    margin: 0;
+  }
+
+  .brand-preview {
+    display: grid;
+    gap: var(--spacing-8);
+    margin-block-start: var(--spacing-8);
+  }
+
+  .brand-preview__inverse {
+    display: grid;
+    padding: var(--spacing-8);
+    background-color: var(--color-background-strong);
+    place-items: center;
+  }
+</style>

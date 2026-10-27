@@ -1,0 +1,266 @@
+---
+import type { PromotionConfig } from '@emeza/astro-ad-modules';
+
+interface Props {
+  promotion: PromotionConfig;
+  label?: string;
+  delayMs?: number;
+  frequency?: 'always' | 'session' | 'local';
+  preview?: boolean;
+}
+
+const {
+  promotion,
+  label = 'Promoción',
+  delayMs = 850,
+  frequency = 'always',
+  preview = false,
+} = Astro.props;
+
+const target = promotion.target ?? '_self';
+---
+
+<dialog
+  class="ad-popup"
+  data-ad-popup
+  data-ad-id={promotion.id}
+  data-delay={Math.max(0, delayMs)}
+  data-frequency={frequency}
+  data-preview={preview}
+  aria-label={label}
+  open={preview || undefined}
+>
+  <button
+    class="ad-popup__close"
+    type="button"
+    data-ad-popup-close
+    aria-label="Cerrar promoción"
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="m6 6 12 12M18 6 6 18" />
+    </svg>
+  </button>
+  <a
+    class="ad-popup__link"
+    href={promotion.href}
+    target={target}
+    rel={target === '_blank' ? 'noopener noreferrer' : undefined}
+    aria-label={promotion.ctaLabel}
+    data-ad-popup-click
+  >
+    <picture>
+      {promotion.media.mobileAvifSrc && (
+        <source
+          media="(max-width: 680px)"
+          srcset={promotion.media.mobileAvifSrc}
+          type="image/avif"
+        />
+      )}
+      {promotion.media.mobileSrc && (
+        <source media="(max-width: 680px)" srcset={promotion.media.mobileSrc} />
+      )}
+      {promotion.media.avifSrc && (
+        <source srcset={promotion.media.avifSrc} type="image/avif" />
+      )}
+      <img
+        src={promotion.media.src}
+        alt={promotion.media.alt}
+        width={promotion.media.width}
+        height={promotion.media.height}
+        decoding="async"
+      />
+    </picture>
+  </a>
+</dialog>
+
+<script>
+  import { schedulePromotion } from '../../scripts/promotion-scheduler';
+  import {
+    mountPromotionDocumentBackdrop,
+    needsDocumentPromotionBackdrop,
+  } from '../../scripts/promotion-document-backdrop';
+
+  // Site adapter: keep the library's artwork, dismiss controls and analytics,
+  // with one cancellable timer that waits while another dialog is being used.
+  function initializePopups() {
+    document
+      .querySelectorAll<HTMLDialogElement>(
+        '[data-ad-popup]:not([data-preview="true"])',
+      )
+      .forEach((popup) => {
+        if (popup.dataset.adReady === 'true') return;
+        popup.dataset.adReady = 'true';
+        const removeBackdrop = needsDocumentPromotionBackdrop()
+          ? mountPromotionDocumentBackdrop(popup)
+          : () => {};
+        const id = popup.dataset.adId ?? '';
+        const close = () => {
+          if (popup.open) popup.close();
+        };
+        popup
+          .querySelector('[data-ad-popup-close]')
+          ?.addEventListener('click', close);
+        popup.addEventListener('click', (event) => {
+          if (event.target === popup) close();
+        });
+        popup
+          .querySelector<HTMLAnchorElement>('[data-ad-popup-click]')
+          ?.addEventListener('click', (event) => {
+            popup.dispatchEvent(
+              new CustomEvent('admodule:click', {
+                bubbles: true,
+                detail: {
+                  id,
+                  placement: 'popup',
+                  href:
+                    event.currentTarget instanceof HTMLAnchorElement
+                      ? event.currentTarget.href
+                      : '',
+                },
+              }),
+            );
+            close();
+          });
+        popup.addEventListener('close', () =>
+          popup.dispatchEvent(
+            new CustomEvent('admodule:dismiss', {
+              bubbles: true,
+              detail: { id, placement: 'popup' },
+            }),
+          ),
+        );
+        const stop = schedulePromotion(popup);
+        document.addEventListener(
+          'astro:before-swap',
+          () => {
+            stop();
+            removeBackdrop();
+          },
+          { once: true },
+        );
+      });
+  }
+  initializePopups();
+  document.addEventListener('astro:page-load', initializePopups);
+</script>
+
+<style>
+  :global(html:has(.ad-popup[open]:not([data-preview='true']))) {
+    background: #111827;
+  }
+  :global(body:has(.ad-popup[open]:not([data-preview='true']))) {
+    background: #111827;
+  }
+  :global(body:has(.ad-popup[data-document-backdrop='true'])) {
+    position: relative;
+  }
+  :global(.ad-popup-document-backdrop) {
+    /* Cover the full document, including the area revealed by iOS chrome.
+       Do not make this fixed or apply backdrop-filter: WebKit clips those
+       compositor layers. A plain tint also avoids blurring a long page. */
+    position: absolute;
+    inset: 0;
+    z-index: 2147483647;
+    background: rgb(0 0 0 / 0.72);
+    pointer-events: none;
+  }
+  :global(.ad-popup-document-backdrop[hidden]) {
+    display: none;
+  }
+  .ad-popup[data-document-backdrop='true']::backdrop {
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .ad-popup,
+  .ad-popup * {
+    box-sizing: border-box;
+  }
+  .ad-popup {
+    width: min(calc(100% - 2rem), 38.75rem);
+    max-height: calc(var(--visual-viewport-height, 100dvh) - 2rem);
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    border-radius: var(--radius-xl);
+    background: #111;
+    color: #fff;
+    box-shadow: 0 1.5rem 5rem rgb(0 0 0 / 0.55);
+  }
+  .ad-popup:not([data-preview='true']) {
+    position: fixed;
+    top: var(--visual-viewport-center-y, 50%);
+    right: auto;
+    bottom: auto;
+    left: 50%;
+    margin: 0;
+    transform: translate(-50%, -50%);
+  }
+  .ad-popup::backdrop {
+    position: fixed;
+    top: var(--visual-viewport-top, 0px);
+    right: 0;
+    bottom: auto;
+    left: 0;
+    width: 100vw;
+    height: var(--visual-viewport-height, 100dvh);
+    background: rgb(0 0 0 / 0.72);
+    backdrop-filter: blur(7px);
+  }
+  .ad-popup__link,
+  .ad-popup picture,
+  .ad-popup img {
+    display: block;
+    width: 100%;
+  }
+  .ad-popup__link {
+    line-height: 0;
+  }
+  .ad-popup img {
+    height: auto;
+    max-height: calc(var(--visual-viewport-height, 100dvh) - 2rem);
+    object-fit: contain;
+  }
+  .ad-popup__close {
+    position: absolute;
+    z-index: 2;
+    top: 0.75rem;
+    right: 0.75rem;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0.75rem;
+    border: 1px solid rgb(255 255 255 / 0.6);
+    border-radius: 50%;
+    background: rgb(0 0 0 / 0.78);
+    color: #fff;
+    cursor: pointer;
+  }
+  .ad-popup__close svg {
+    display: block;
+    width: 100%;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+  }
+  .ad-popup[data-preview='true'] {
+    position: relative;
+    margin: 0;
+    max-height: none;
+  }
+  .ad-popup[data-preview='true'] img {
+    max-height: none;
+  }
+  .ad-popup__link:focus-visible,
+  .ad-popup__close:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: -4px;
+  }
+  @media (max-width: 680px) {
+    .ad-popup {
+      width: min(calc(100% - 1.5rem), 29.375rem);
+    }
+  }
+</style>

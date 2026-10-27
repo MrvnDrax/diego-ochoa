@@ -1,0 +1,98 @@
+---
+type SectionTone = 'canvas' | 'subtle' | 'brand-subtle' | 'warm' | 'strong';
+
+type SectionSpacing = 'none' | 'compact' | 'default' | 'large';
+
+interface Props {
+  id?: string;
+  tone?: SectionTone;
+  spacing?: SectionSpacing;
+  class?: string;
+}
+
+const {
+  id,
+  tone = 'canvas',
+  spacing = 'default',
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+<section
+  id={id}
+  class:list={['section', `section--${tone}`, `section--${spacing}`, className]}
+  {...rest}
+>
+  <slot />
+</section>
+
+<style>
+  .section {
+    width: 100%;
+  }
+
+  .section--none {
+    padding-block: 0;
+  }
+
+  .section--compact {
+    padding-block: var(--spacing-10);
+  }
+
+  .section--default {
+    padding-block: var(--spacing-16);
+  }
+
+  .section--large {
+    padding-block: var(--spacing-20);
+  }
+
+  .section--canvas {
+    color: var(--color-text-primary);
+    background-color: var(--color-background-canvas);
+  }
+
+  .section--subtle {
+    color: var(--color-text-primary);
+    background-color: var(--color-background-subtle);
+  }
+
+  .section--brand-subtle {
+    --color-background-strong: #1b325f;
+    --color-text-primary: var(--color-neutral-0);
+    --color-text-secondary: var(--color-brand-clinical-200);
+    --color-text-brand: var(--color-brand-clinical-200);
+    --color-text-link: var(--color-brand-clinical-200);
+    --color-border-default: var(--color-brand-clinical-400);
+    --color-border-strong: var(--color-brand-clinical-200);
+    --color-border-focus: var(--color-brand-clinical-400);
+
+    color: var(--color-text-primary);
+    background-color: var(--color-brand-clinical-950);
+  }
+
+  .section--warm {
+    color: var(--color-text-primary);
+    background-color: var(--color-background-warm);
+  }
+
+  .section--strong {
+    color: var(--color-text-inverse);
+    background-color: var(--color-background-strong);
+  }
+
+  @media (min-width: 75rem) {
+    .section--compact {
+      padding-block: var(--spacing-12);
+    }
+
+    .section--default {
+      padding-block: var(--spacing-20);
+    }
+
+    .section--large {
+      padding-block: var(--spacing-24);
+    }
+  }
+</style>

@@ -1,0 +1,276 @@
+---
+import { AdBanner, AdBannerGroup } from '@emeza/astro-ad-modules';
+import {
+  advertising,
+  consultationBanner,
+  mobileConsultationBanner,
+  serviceBanners,
+} from '@data/advertising';
+
+interface Props {
+  placement: 'primary' | 'services';
+}
+const { placement }: Props = Astro.props;
+const enabled =
+  advertising.enabled &&
+  (placement === 'primary'
+    ? advertising.primaryEnabled
+    : advertising.servicesEnabled);
+---
+
+{enabled && (
+  <div
+    class:list={[
+      'doctor-ad-section',
+      { 'doctor-ad-section--primary': placement === 'primary' },
+    ]}
+  >
+    {placement === 'primary' ? (
+      <aside
+        class="doctor-ad-section__inner"
+        aria-label="Consultar una gestión"
+      >
+        <div class="doctor-ad-desktop">
+          <AdBanner banner={consultationBanner} />
+        </div>
+        <div class="doctor-ad-mobile">
+          <AdBanner banner={mobileConsultationBanner} />
+        </div>
+        {advertising.popupEnabled && (
+          <button
+            type="button"
+            class="doctor-promotion-trigger"
+            data-open-doctor-promotion
+            aria-haspopup="dialog"
+          >
+            Ver promoción y agendar
+          </button>
+        )}
+      </aside>
+    ) : (
+      <AdBannerGroup
+        banners={serviceBanners}
+        label="Conoce las opciones de orientación inmobiliaria"
+        columns={2}
+        tight
+      />
+    )}
+
+  </div>
+)}
+
+<style>
+  .doctor-ad-section {
+    --ad-font-display: var(--font-family-heading);
+    --ad-font-body: var(--font-family-body);
+    background: var(--color-background-canvas);
+  }
+  .doctor-ad-section--primary {
+    padding: clamp(1.5rem, 4vw, 3rem) var(--layout-gutter);
+  }
+  .doctor-ad-section__inner {
+    max-width: var(--layout-content-max);
+    margin-inline: auto;
+  }
+  .doctor-ad-section :global(.ad-banner-group__inner) {
+    max-width: var(--layout-content-max);
+  }
+
+  .doctor-ad-section.doctor-ad-section :global(.ad-banner .ad-banner__title) {
+    font-size: clamp(2rem, 3.2vw, 3.5rem);
+    font-weight: 600;
+    line-height: 1.08;
+    text-transform: none;
+    letter-spacing: -0.025em;
+  }
+  .doctor-ad-section :global(.ad-banner .ad-banner__title em) {
+    font-weight: 600;
+  }
+  .doctor-ad-section :global(.ad-banner__cta),
+  .doctor-ad-section :global(.ad-banner__eyebrow) {
+    font-family: var(--font-family-body);
+    font-weight: 600;
+  }
+  .doctor-ad-section :global(.ad-banner__cta) {
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .doctor-ad-section--primary.doctor-ad-section
+    :global(.ad-banner .ad-banner__title) {
+    font-size: clamp(2rem, 2.6vw, 2.8rem);
+  }
+  @media (min-width: 761px) and (max-width: 1000px) {
+    .doctor-ad-section--primary :global(.ad-banner.ad-banner--horizontal) {
+      height: 26rem;
+    }
+  }
+
+  .doctor-ad-mobile {
+    display: none;
+  }
+  @media (max-width: 760px) {
+    .doctor-ad-desktop {
+      display: none;
+    }
+    .doctor-ad-mobile {
+      display: block;
+    }
+    .doctor-ad-mobile :global(.ad-banner.ad-banner--artwork) {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 2172 / 724;
+      min-height: 0;
+    }
+  }
+  /* Page gutters for the rails reduce the available width; use flow instead of absolute copy. */
+  .doctor-ad-section--primary :global(.ad-banner.ad-banner--split) {
+    height: auto;
+    min-height: 22rem;
+  }
+  .doctor-ad-section--primary
+    :global(.ad-banner.ad-banner--split .ad-banner__content) {
+    position: relative;
+    padding: clamp(1.25rem, 2vw, 2rem);
+    justify-content: center;
+    gap: 1.5rem;
+  }
+  .doctor-ad-section--primary
+    :global(.ad-banner.ad-banner--split .ad-banner__copy),
+  .doctor-ad-section--primary
+    :global(.ad-banner.ad-banner--split .ad-banner__action) {
+    position: static;
+    width: auto;
+  }
+  .doctor-ad-section--primary
+    :global(.ad-banner.ad-banner--split .ad-banner__media) {
+    grid-row: 1;
+  }
+  @media (min-width: 761px) and (max-width: 1500px) {
+    .doctor-ad-section.doctor-ad-section :global(.ad-banner .ad-banner__title) {
+      font-size: 2rem;
+    }
+    .doctor-ad-section--primary :global(.ad-banner.ad-banner--split) {
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    }
+    .doctor-ad-section--primary :global(.ad-banner__cta) {
+      padding-inline: 1rem;
+    }
+  }
+
+  .doctor-ad-sources {
+    max-width: var(--layout-content-max);
+    margin: 0 auto;
+    padding: 0 var(--layout-gutter) 2rem;
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+  }
+  .doctor-ad-sources a {
+    display: inline-block;
+    margin-left: 0.75rem;
+    text-underline-offset: 0.2em;
+  }
+  .doctor-ad-sources span {
+    display: block;
+    margin-top: 0.5rem;
+  }
+  .doctor-ad-section :global(.ad-banner__badge) {
+    font-family: var(--font-family-body);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+  }
+  .doctor-ad-section :global(.ad-banner__action small) {
+    font-family: var(--font-family-body);
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+  .doctor-ad-section :global(.ad-banner.ad-banner--square) {
+    aspect-ratio: auto;
+    min-height: 24rem;
+  }
+  .doctor-ad-section :global(.ad-banner.ad-banner--square .ad-banner__content) {
+    height: auto;
+    min-height: inherit;
+    padding: clamp(1.25rem, 2vw, 2rem);
+    gap: 1.5rem;
+  }
+
+  .doctor-promotion-trigger {
+    display: block;
+    margin: 1rem auto 0;
+    padding: 0.75rem 1.25rem;
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    background: var(--color-background-subtle);
+    color: var(--color-text-primary);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .doctor-ad-section--primary :global(.ad-banner.ad-banner--artwork) {
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 3 / 1;
+  }
+
+  .doctor-ad-section :global(.ad-banner__artwork-link::before),
+  .doctor-ad-section :global(.ad-banner--overlay::before) {
+    content: '';
+    position: absolute;
+    z-index: 3;
+    pointer-events: none;
+    top: 5%;
+    left: 3%;
+    width: 37%;
+    aspect-ratio: 570 / 104;
+    background: url('/images/advertising/brand-lockup-ink.svg') left center /
+      contain no-repeat;
+  }
+  .doctor-ad-section :global(.ad-banner--overlay::before) {
+    top: 6%;
+    left: 7%;
+    width: 3.5rem;
+    aspect-ratio: 1;
+    background-image: url('/images/advertising/brand-mark-ink.svg');
+  }
+  .doctor-ad-sources summary {
+    cursor: pointer;
+  }
+  .doctor-ad-section :global(.ad-banner.ad-banner--square .ad-banner__title) {
+    max-width: none;
+    font-size: clamp(1.75rem, 2.4vw, 2.5rem);
+  }
+
+  .doctor-promotion-trigger {
+    border-color: #9cc4e4;
+    background: #e9f2f9;
+    color: #1b325f;
+  }
+
+  .doctor-ad-section :global(.ad-banner__cta) {
+    background: var(--color-action-whatsapp);
+    color: var(--color-text-on-coral);
+    font-weight: var(--font-weight-bold);
+  }
+  .doctor-ad-section :global(.ad-banner__title em) {
+    color: #9cc4e4;
+  }
+  .doctor-promotion-trigger:focus-visible {
+    outline: 3px solid #1b325f;
+    outline-offset: 3px;
+  }
+  @media (max-width: 760px) {
+    .doctor-ad-mobile :global(.ad-banner__artwork-link) {
+      position: relative;
+    }
+    .doctor-ad-mobile :global(.ad-banner__artwork-link::before) {
+      content: none;
+    }
+    .doctor-ad-mobile :global(.ad-banner__artwork-link::after) {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: url('/images/advertising/diego-mobile-overlay.svg') center / 100% 100% no-repeat;
+    }
+  }
+</style>

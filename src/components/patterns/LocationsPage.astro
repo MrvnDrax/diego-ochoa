@@ -1,0 +1,319 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import WhatsAppIcon from '@components/brand/WhatsAppIcon.astro';
+import LocationExplorer from '@components/patterns/LocationExplorer.astro';
+import Container from '@components/ui/Container.astro';
+import Button from '@components/ui/Button.astro';
+import { locations } from '@data/locations';
+import { generalWhatsAppHref } from '@data/whatsapp-messages';
+import {
+  createLocationSchemas,
+  referenceStructuredData,
+} from '@data/structured-data';
+import SiteLayout from '@layouts/SiteLayout.astro';
+
+interface Props {
+  page: CollectionEntry<'pages'>;
+}
+const { page }: Props = Astro.props;
+const locationSchemas = createLocationSchemas();
+---
+
+<SiteLayout
+  title={page.data.title}
+  description={page.data.description}
+  noindex={page.data.noindex}
+  pageType="CollectionPage"
+  mainEntity={referenceStructuredData(locationSchemas)}
+  structuredData={locationSchemas}
+>
+  <div class="locations-page">
+    <section
+      id="ubicaciones-introduccion"
+      class="locations-page__intro"
+      aria-labelledby="locations-title"
+    >
+      <Container>
+        <div class="locations-page__intro-grid">
+          <div>
+            <p class="locations-page__eyebrow">
+              Tabasco · Chiapas · Veracruz
+            </p>
+            <h1 id="locations-title">
+              Conoce cómo empezar.
+              <br />
+              <span>Hablemos de tu gestión.</span>
+            </h1>
+            <p class="locations-page__lead">{page.data.intro}</p>
+          </div>
+          <aside class="locations-page__availability">
+            <span>Opciones de atención</span>
+            <p>{locations.map((location) => location.area).join(' · ')}</p>
+            <a href="#location-explorer">Ver modalidades y mapa</a>
+          </aside>
+        </div>
+      </Container>
+    </section>
+
+    <section
+      class="locations-page__selection"
+      aria-labelledby="choose-location-title"
+    >
+      <Container>
+        <header class="locations-page__selection-heading">
+          <div>
+            <p class="locations-page__eyebrow">Planea tu contacto</p>
+            <h2 id="choose-location-title">
+              Elige el estado de tu gestión.
+            </h2>
+          </div>
+          <p>
+            Selecciona tu estado para conocer cómo iniciar la conversación por WhatsApp.
+          </p>
+        </header>
+      </Container>
+      <LocationExplorer standalone />
+    </section>
+
+    <section
+      id="consulta-en-linea"
+      class="locations-page__online"
+      aria-labelledby="online-title"
+    >
+      <Container>
+        <div class="locations-page__online-grid">
+          <div>
+            <p class="locations-page__eyebrow">Primer contacto a distancia</p>
+            <h2 id="online-title">¿Quieres empezar por WhatsApp?</h2>
+          </div>
+          <div>
+            <p>
+              Cuéntanos qué trámite buscas realizar. Confirmaremos si se puede revisar a distancia o si requiere una reunión presencial.
+            </p>
+            <Button
+              href={generalWhatsAppHref}
+              target="_blank"
+              variant="inverse"
+              ariaLabel="Consultar una gestión por WhatsApp"
+            >
+              <WhatsAppIcon slot="icon-start" />
+              Consultar disponibilidad
+            </Button>
+          </div>
+        </div>
+      </Container>
+    </section>
+  </div>
+</SiteLayout>
+
+<style>
+  .locations-page__intro {
+    background: #e9f2f9;
+    padding-block: clamp(3rem, 6vw, 5rem);
+    border-bottom: 1px solid #c8d7e6;
+  }
+  .locations-page__intro-grid {
+    display: grid;
+    gap: 2rem;
+    align-items: end;
+  }
+  .locations-page__eyebrow {
+    margin: 0 0 1rem;
+    color: #1b325f;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  h1,
+  h2 {
+    margin: 0;
+    font-family: var(--font-family-heading);
+    color: #1b325f;
+  }
+  h1 {
+    font-size: clamp(2.4rem, 4.8vw, 4rem);
+    line-height: 1.07;
+    letter-spacing: -0.035em;
+  }
+  h1 span {
+    color: #3b597f;
+  }
+  .locations-page__lead {
+    margin: 1.5rem 0 0;
+    color: #46576e;
+    max-width: 42rem;
+    font-size: 1.125rem;
+    line-height: 1.7;
+  }
+  .locations-page__availability {
+    border-left: 3px solid #f26c4f;
+    padding: 0.5rem 0 0.5rem 1.5rem;
+  }
+  .locations-page__availability > span {
+    font-family: var(--font-family-heading);
+    color: #1b325f;
+    font-size: 1.6rem;
+    font-weight: 600;
+  }
+  .locations-page__availability p {
+    color: #46576e;
+    line-height: 1.6;
+  }
+  .locations-page__availability a {
+    display: flex;
+    gap: 1rem;
+    color: #1b325f;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .locations-page__selection {
+    background: #fff;
+    padding-block: clamp(2.5rem, 5vw, 4rem);
+  }
+  .locations-page__selection-heading {
+    display: grid;
+    align-items: end;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .locations-page__selection-heading h2 {
+    font-size: clamp(1.8rem, 2.8vw, 2.5rem);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    max-width: 33rem;
+  }
+  .locations-page__selection-heading > p {
+    color: #46576e;
+    line-height: 1.65;
+    max-width: 30rem;
+    margin: 0;
+  }
+  .locations-page :global(.location-explorer--standalone) {
+    width: 100%;
+    max-width: none;
+    padding: 0 1rem;
+    margin: 0;
+    border-radius: 0;
+    background: #fff;
+  }
+  .locations-page :global(.location-explorer__shell) {
+    width: min(100%, 75rem);
+  }
+  .locations-page :global(.location-explorer__tab) {
+    height: 3.5rem;
+    border-radius: var(--radius-md);
+    color: #1b325f;
+    background: #e9f2f9;
+    border-bottom: 1px solid #c8d7e6;
+  }
+  .locations-page :global(.location-explorer__tab[aria-selected='true']) {
+    color: #fff;
+    background: #1b325f;
+    box-shadow: inset 0 -3px 0 #f26c4f;
+  }
+  .locations-page :global(.location-explorer__tab:hover) {
+    color: #fff;
+    background: #1b325f;
+    transform: none;
+  }
+  .locations-page :global(.location-explorer__tab-icon) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  .locations-page :global(.location-explorer__card) {
+    border-radius: var(--radius-lg);
+    background: #1b325f;
+    padding: 0;
+    gap: 0;
+    min-height: 0;
+  }
+  .locations-page :global(.location-explorer__map) {
+    border-radius: var(--radius-lg);
+  }
+  .locations-page :global(.location-explorer__details) {
+    padding: 1.5rem;
+    min-height: 0;
+    align-items: stretch;
+    text-align: start;
+    gap: 1rem;
+  }
+  .locations-page :global(.location-explorer__title),
+  .locations-page :global(.location-explorer__address) {
+    text-align: start;
+  }
+  .locations-page :global(.location-explorer__title) {
+    font-size: clamp(1.6rem, 2.5vw, 2.25rem);
+    line-height: 1.2;
+  }
+  .locations-page :global(.location-explorer__info) {
+    grid-template-columns: 1fr;
+  }
+  .locations-page :global(.location-explorer__info-row) {
+    justify-content: flex-start;
+    font-size: 0.9rem;
+  }
+  .locations-page :global(.location-explorer__badge) {
+    border-radius: var(--radius-md);
+  }
+  .locations-page :global(.location-explorer__action) {
+    border-radius: var(--radius-md);
+  }
+  .locations-page :global(.location-explorer__action--whatsapp) {
+    color: var(--color-text-on-coral);
+    background: var(--color-action-whatsapp);
+  }
+  .locations-page :global(.location-explorer__confirmation) {
+    text-align: start;
+  }
+  .locations-page__online {
+    background: #1b325f;
+    padding-block: clamp(2.5rem, 5vw, 4rem);
+  }
+  .locations-page__online-grid {
+    display: grid;
+    gap: 1.5rem;
+    align-items: center;
+  }
+  .locations-page__online .locations-page__eyebrow {
+    color: #9cc4e4;
+  }
+  .locations-page__online h2 {
+    color: #fff;
+    font-size: clamp(1.8rem, 2.8vw, 2.5rem);
+    line-height: 1.15;
+  }
+  .locations-page__online p:not(.locations-page__eyebrow) {
+    color: #d6e2ef;
+    line-height: 1.7;
+    margin: 0 0 1.5rem;
+  }
+  @media (min-width: 48rem) {
+    .locations-page__intro-grid {
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      gap: 3rem;
+    }
+    .locations-page__selection-heading,
+    .locations-page__online-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 3rem;
+    }
+    .locations-page :global(.location-explorer--standalone) {
+      padding-inline: 2rem;
+    }
+    .locations-page :global(.location-explorer__details) {
+      padding: 2rem;
+    }
+  }
+  @media (min-width: 75rem) {
+    .locations-page :global(.location-explorer__map) {
+      height: 100%;
+      min-height: 28rem;
+    }
+    .locations-page :global(.location-explorer__details) {
+      padding: 2.5rem;
+    }
+  }
+</style>

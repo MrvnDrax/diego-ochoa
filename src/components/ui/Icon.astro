@@ -1,0 +1,159 @@
+---
+import {
+  Accessibility,
+  Activity,
+  ArrowLeft,
+  ArrowRight,
+  Bandage,
+  BicepsFlexed,
+  BoneFracture,
+  CalendarDays,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  ExternalLink,
+  Expand,
+  FileText,
+  Footprints,
+  GraduationCap,
+  LockKeyhole,
+  Mail,
+  MapPin,
+  Menu,
+  MessageCircle,
+  MoveUpRight,
+  Move3d,
+  MoveRight,
+  MousePointerClick,
+  Phone,
+  Quote,
+  RotateCcw,
+  Route,
+  ShieldAlert,
+  Stethoscope,
+  Syringe,
+  TimerReset,
+  TrendingDown,
+  X,
+  Hospital,
+  SquareArrowOutUpRight,
+} from '@lucide/astro';
+
+const icons = {
+  accessibility: Accessibility,
+  activity: Activity,
+  'arrow-left': ArrowLeft,
+  'arrow-right': ArrowRight,
+  bandage: Bandage,
+  'biceps-flexed': BicepsFlexed,
+  'bone-fracture': BoneFracture,
+  calendar: CalendarDays,
+  check: Check,
+  'chevron-left': ChevronLeft,
+  'chevron-right': ChevronRight,
+  clock: Clock,
+  close: X,
+  'external-link': ExternalLink,
+  expand: Expand,
+  'file-text': FileText,
+  footprints: Footprints,
+  'graduation-cap': GraduationCap,
+  'lock-keyhole': LockKeyhole,
+  mail: Mail,
+  'map-pin': MapPin,
+  menu: Menu,
+  'move-up-right': MoveUpRight,
+  'move-3d': Move3d,
+  quote: Quote,
+  'rotate-ccw': RotateCcw,
+  route: Route,
+  'shield-alert': ShieldAlert,
+  phone: Phone,
+  'message-circle': MessageCircle,
+  hospital: Hospital,
+  'square-arrow-out-up-right': SquareArrowOutUpRight,
+  'move-right': MoveRight,
+  'mouse-pointer-click': MousePointerClick,
+  stethoscope: Stethoscope,
+  syringe: Syringe,
+  'timer-reset': TimerReset,
+  'trending-down': TrendingDown,
+} as const;
+
+type IconName = keyof typeof icons;
+
+type IconSize = 'small' | 'compact' | 'medium' | 'large' | 'xlarge';
+
+interface Props {
+  name: IconName;
+  size?: IconSize;
+  strokeWidth?: number;
+  label?: string;
+  class?: string;
+  responsive?: boolean;
+}
+
+const {
+  name,
+  size = 'medium',
+  strokeWidth = 2,
+  label,
+  class: className,
+  responsive = false,
+}: Props = Astro.props;
+
+const iconSizes = {
+  small: 16,
+  compact: 20,
+  medium: 24,
+  large: 32,
+  xlarge: 40,
+} as const;
+
+const dimensions = responsive ? undefined : iconSizes[size];
+const IconComponent = icons[name];
+---
+
+<IconComponent
+  size={dimensions}
+  stroke-width={strokeWidth}
+  aria-hidden={label ? undefined : 'true'}
+  aria-label={label}
+  role={label ? 'img' : undefined}
+  focusable="false"
+  class:list={['icon', !responsive && `icon--${size}`, className]}
+/>
+
+<style>
+  .icon {
+    display: block;
+    flex: none;
+    color: currentColor;
+  }
+
+  .icon--small {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .icon--compact {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .icon--medium {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .icon--large {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .icon--xlarge {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+</style>

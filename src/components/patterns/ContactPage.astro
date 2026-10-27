@@ -1,0 +1,345 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import WhatsAppIcon from '@components/brand/WhatsAppIcon.astro';
+import ContactForm from '@components/forms/ContactForm.astro';
+import Container from '@components/ui/Container.astro';
+import Icon from '@components/ui/Icon.astro';
+import Button from '@components/ui/Button.astro';
+import { doctoraliaProfile } from '@data/booking';
+import { contact } from '@data/contact';
+import { generalWhatsAppHref } from '@data/whatsapp-messages';
+import SiteLayout from '@layouts/SiteLayout.astro';
+
+interface Props {
+  page: CollectionEntry<'pages'>;
+}
+const { page }: Props = Astro.props;
+---
+
+<SiteLayout
+  title={page.data.title}
+  description={page.data.description}
+  noindex={page.data.noindex}
+  pageType="ContactPage"
+>
+  <section
+    id="contacto-introduccion"
+    class="contact-page__hero"
+    aria-labelledby="contact-title"
+  >
+    <Container>
+      <div class="contact-page__hero-grid">
+        <div class="contact-page__intro">
+          <p class="contact-page__eyebrow">{page.data.eyebrow}</p>
+          <h1 id="contact-title">
+            Tu proyecto
+            <br />
+            <span>empieza aquí.</span>
+          </h1>
+          <p class="contact-page__lead">{page.data.intro}</p>
+          <ol class="contact-page__steps" aria-label="Cómo iniciar una consulta">
+            <li>
+              <div>
+                <h2>Cuéntanos tu objetivo</h2>
+                <p>Compra, terreno, crédito o documentos.</p>
+              </div>
+            </li>
+            <li>
+              <div>
+                <h2>Comparte lo que tienes</h2>
+                <p>
+                  Escríbenos por WhatsApp o prepara un resumen en el formulario.
+                </p>
+              </div>
+            </li>
+            <li>
+              <div>
+                <h2>Aclara el siguiente paso</h2>
+                <p>Te indicaremos qué información hace falta para revisar tu caso.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+        <aside
+          id="contacto-directo"
+          class="contact-page__booking"
+          aria-labelledby="direct-contact-title"
+        >
+          <span class="contact-page__booking-label">Contacto directo</span>
+          <h2 id="direct-contact-title">Hablemos de tu próxima decisión.</h2>
+          <p>
+            Escribe a Diego Ochoa para contarle qué gestión inmobiliaria quieres realizar.
+          </p>
+          <Button
+            href={generalWhatsAppHref}
+            target="_blank"
+            variant="whatsapp"
+            fullWidth
+            class="contact-page__whatsapp-button"
+            ariaLabel="Escribir por WhatsApp a Diego Ochoa"
+          >
+            <WhatsAppIcon slot="icon-start" />
+            Consultar por WhatsApp
+          </Button>
+          <p class="contact-page__confirmation">
+            El alcance y condiciones se confirman después de revisar tu caso.
+          </p>
+          <div class="contact-page__alternatives">
+            <div class="contact-page__alternative">
+              <span>También puedes llamar</span>
+              <a href={contact.phoneHref}>{contact.phoneDisplay}</a>
+            </div>
+            <div class="contact-page__alternative">
+              <span>Acerca de Diego</span>
+              <a
+                href={doctoraliaProfile.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Escribir a Diego Ochoa por WhatsApp"
+              >
+                Escribir por WhatsApp
+              </a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </Container>
+  </section>
+
+  <section
+    id="solicitud-de-cita"
+    class="contact-page__form-section"
+    aria-labelledby="request-title"
+  >
+    <Container>
+      <div class="contact-page__form-layout">
+        <aside class="contact-page__form-copy">
+          <p class="contact-page__eyebrow">Prepara tu mensaje</p>
+          <h2 id="request-title">
+            Comparte solo
+            <br />
+            lo necesario.
+          </h2>
+          <p>
+            Usa este formulario para preparar tu mensaje. Al enviarlo, se abrirá
+            WhatsApp con los datos que nos compartiste.
+          </p>
+          <a class="contact-page__location-link" href="/ubicaciones/">
+            Ver opciones de atención
+          </a>
+          <div class="contact-page__notice">
+            <Icon name="file-text" size="medium" />
+            <p>
+              No compartas documentos completos ni datos financieros sensibles en el formulario. Primero describe brevemente tu caso.
+            </p>
+          </div>
+        </aside>
+        <div class="contact-page__form-panel">
+          <ContactForm />
+        </div>
+      </div>
+    </Container>
+  </section>
+</SiteLayout>
+
+<style>
+  .contact-page__hero {
+    padding-block: clamp(3rem, 7vw, 6rem);
+    background: #e9f2f9;
+    border-bottom: 1px solid #c8d7e6;
+  }
+  .contact-page__hero-grid {
+    display: grid;
+    align-items: start;
+    gap: 2.5rem;
+  }
+  .contact-page__eyebrow {
+    margin: 0 0 1rem;
+    color: #1b325f;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  h1,
+  h2 {
+    font-family: var(--font-family-heading);
+    color: #1b325f;
+    margin: 0;
+  }
+  h1 {
+    font-size: clamp(2.6rem, 5vw, 4.5rem);
+    line-height: 1.06;
+    letter-spacing: -0.04em;
+  }
+  h1 span {
+    color: #3b597f;
+  }
+  .contact-page__lead {
+    max-width: 33rem;
+    margin: 1.5rem 0 2rem;
+    color: #46576e;
+    font-size: 1.125rem;
+    line-height: 1.7;
+  }
+  .contact-page__steps {
+    display: grid;
+    gap: 1.2rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .contact-page__steps li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  .contact-page__steps h2 {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+  .contact-page__steps p {
+    color: #46576e;
+    margin: 0.25rem 0 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .contact-page__booking {
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    background: #1b325f;
+    color: #fff;
+    border-top: 4px solid #f26c4f;
+    border-radius: var(--radius-md);
+  }
+  .contact-page__booking-label {
+    color: #9cc4e4;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .contact-page__booking h2 {
+    color: #fff;
+    margin-top: 1rem;
+    max-width: 23rem;
+    font-size: clamp(1.7rem, 2.6vw, 2.35rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+  .contact-page__booking > p {
+    color: #d6e2ef;
+    line-height: 1.65;
+    margin: 1.2rem 0 1.5rem;
+  }
+  .contact-page__booking :global(.contact-page__whatsapp-button) {
+    min-width: 0;
+    min-height: 3.5rem;
+    color: var(--color-text-on-coral);
+    background: var(--color-action-whatsapp);
+    border-radius: var(--radius-md);
+  }
+  .contact-page__booking :global(.contact-page__whatsapp-button:hover),
+  .contact-page__booking :global(.contact-page__whatsapp-button:focus-visible) {
+    color: var(--color-text-on-coral);
+    background: var(--color-action-whatsapp-hover);
+  }
+  .contact-page__booking > .contact-page__confirmation {
+    font-size: 0.75rem;
+    line-height: 1.5;
+    margin: 0.75rem 0 1.75rem;
+    color: #d6e2ef;
+  }
+  .contact-page__alternative {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.25rem;
+    border-top: 1px solid #506585;
+    padding-block: 1rem;
+  }
+  .contact-page__alternative:last-child {
+    padding-bottom: 0;
+  }
+  .contact-page__alternative span {
+    color: #c8d8eb;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+  .contact-page__alternative a {
+    color: #d7ebfa;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1.5;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .contact-page__alternative a:hover,
+  .contact-page__alternative a:focus-visible {
+    color: #fff;
+  }
+  .contact-page__form-section {
+    padding-block: clamp(3rem, 6vw, 5rem);
+    background: #fff;
+  }
+  .contact-page__form-layout {
+    display: grid;
+    gap: 2rem;
+    align-items: start;
+  }
+  .contact-page__form-copy h2 {
+    font-size: clamp(1.8rem, 3vw, 2.7rem);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+  }
+  .contact-page__form-copy > p:not(.contact-page__eyebrow) {
+    color: #46576e;
+    line-height: 1.7;
+    margin: 1.25rem 0;
+  }
+  .contact-page__location-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    color: #1b325f;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 1rem 0;
+    border-bottom: 1px solid #d7e1ec;
+  }
+  .contact-page__notice {
+    display: grid;
+    grid-template-columns: 1.5rem minmax(0, 1fr);
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #d7e1ec;
+    color: #46576e;
+  }
+  .contact-page__notice p {
+    font-size: 0.8rem;
+    line-height: 1.65;
+    margin: 0;
+  }
+  .contact-page__form-panel {
+    padding: clamp(1.25rem, 3vw, 2.5rem);
+    border: 1px solid #d7e1ec;
+    border-top: 3px solid #1b325f;
+    border-radius: var(--radius-md);
+    background: #f8fafc;
+  }
+  @media (min-width: 48rem) {
+    .contact-page__hero-grid {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 3rem;
+    }
+    .contact-page__form-layout {
+      grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+      gap: 3rem;
+    }
+  }
+</style>

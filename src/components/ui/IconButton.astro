@@ -1,0 +1,104 @@
+---
+type IconButtonTone = 'default' | 'inverse';
+
+type NativeButtonType = 'button' | 'submit' | 'reset';
+
+interface Props {
+  label: string;
+  href?: string;
+  type?: NativeButtonType;
+  tone?: IconButtonTone;
+  disabled?: boolean;
+  class?: string;
+}
+
+const {
+  label,
+  href,
+  type = 'button',
+  tone = 'default',
+  disabled = false,
+  class: className,
+} = Astro.props;
+
+const classes = ['icon-button', `icon-button--${tone}`, className];
+---
+
+{href ? (
+  <a
+    href={disabled ? undefined : href}
+    aria-label={label}
+    aria-disabled={disabled ? 'true' : undefined}
+    tabindex={disabled ? -1 : undefined}
+    class:list={classes}
+  >
+    <span class="icon-button__content" aria-hidden="true">
+      <slot />
+    </span>
+  </a>
+) : (
+  <button
+    type={type}
+    disabled={disabled}
+    aria-label={label}
+    class:list={classes}
+  >
+    <span class="icon-button__content" aria-hidden="true">
+      <slot />
+    </span>
+  </button>
+)}
+
+<style>
+  .icon-button {
+    display: inline-grid;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    border: var(--focus-ring-width) solid currentColor;
+    border-radius: var(--radius-full);
+    background-color: transparent;
+    cursor: pointer;
+    place-items: center;
+    transition:
+      color var(--motion-duration-fast),
+      background-color var(--motion-duration-fast);
+  }
+
+  .icon-button--default {
+    color: var(--color-text-primary);
+  }
+
+  .icon-button--default:hover {
+    background-color: var(--color-background-brand-subtle);
+  }
+
+  .icon-button--inverse {
+    color: var(--color-border-default);
+  }
+
+  .icon-button--inverse:hover {
+    background-color: var(--color-action-primary-hover);
+  }
+
+  .icon-button:disabled,
+  .icon-button[aria-disabled='true'] {
+    color: var(--color-text-disabled);
+    background-color: var(--color-action-disabled);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .icon-button__content {
+    display: grid;
+    width: 1.5rem;
+    height: 1.5rem;
+    place-items: center;
+  }
+
+  .icon-button__content :global(img),
+  .icon-button__content :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+</style>

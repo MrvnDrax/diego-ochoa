@@ -1,0 +1,132 @@
+---
+import MobileContactBar from '@components/navigation/MobileContactBar.astro';
+import SiteFooter from '@components/navigation/SiteFooter.astro';
+import SiteHeader from '@components/navigation/SiteHeader.astro';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import type { BreadcrumbItem, StructuredDataNode } from '@data/structured-data';
+
+interface Props {
+  title: string;
+  description: string;
+  currentPath?: string;
+  noindex?: boolean;
+  mainClass?: string;
+  canonicalPath?: string;
+  pageType?: string | string[];
+  breadcrumbs?: BreadcrumbItem[];
+  mainEntity?: StructuredDataNode | StructuredDataNode[];
+  structuredData?: StructuredDataNode[];
+}
+
+const {
+  title,
+  description,
+  currentPath = Astro.url.pathname,
+  noindex = false,
+  mainClass,
+  canonicalPath = Astro.url.pathname,
+  pageType = 'WebPage',
+  breadcrumbs,
+  mainEntity,
+  structuredData = [],
+}: Props = Astro.props;
+
+const pageLabel = title.split(' | ')[0]?.trim() || title;
+const resolvedBreadcrumbs =
+  breadcrumbs ??
+  (canonicalPath === '/'
+    ? []
+    : [
+        { name: 'Inicio', path: '/' },
+        { name: pageLabel, path: canonicalPath },
+      ]);
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={noindex}
+  canonicalPath={canonicalPath}
+  pageType={pageType}
+  breadcrumbs={resolvedBreadcrumbs}
+  mainEntity={mainEntity}
+  structuredData={structuredData}
+>
+  <a class="skip-link" href="#main-content">
+    Saltar al contenido principal
+  </a>
+
+  <SiteHeader currentPath={currentPath} />
+
+  <main id="main-content" class:list={['site-main', mainClass]}>
+    <slot />
+  </main>
+
+  <SiteFooter />
+  <MobileContactBar />
+</BaseLayout>
+
+<script>
+  import '@scripts/scroll-chrome';
+  import '@scripts/site-motion';
+</script>
+
+<style>
+  .skip-link {
+    position: fixed;
+    z-index: 1000;
+    top: var(--spacing-3);
+    left: var(--spacing-3);
+    padding: var(--spacing-3) var(--spacing-4);
+    border-radius: var(--radius-md);
+    color: var(--color-text-inverse);
+    background-color: var(--color-action-primary);
+    font-weight: 600;
+    text-decoration: none;
+    transform: translateY(calc(-100% - var(--spacing-6)));
+    transition: transform 160ms ease;
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+
+  .site-main {
+    min-height: 50vh;
+  }
+
+  :global(:root) {
+    --mobile-contact-offset: var(
+      --mobile-contact-height,
+      calc(4.5rem + env(safe-area-inset-bottom))
+    );
+  }
+  @media (max-width: 74.999rem) {
+    :global(.site-header),
+    :global(.mobile-contact-bar) {
+      transition: transform 220ms ease;
+    }
+    :global(html[data-scroll-chrome='hidden']) {
+      --mobile-contact-offset: 0px;
+    }
+    :global(html[data-scroll-chrome='hidden'] .site-header) {
+      transform: translateY(calc(-100% - 1px));
+      pointer-events: none;
+    }
+    :global(html[data-scroll-chrome='hidden'] .mobile-contact-bar) {
+      transform: translateY(calc(100% + 1px));
+      pointer-events: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.site-header),
+    :global(.mobile-contact-bar) {
+      transition: none;
+    }
+  }
+  @media (min-width: 75rem) {
+    :global(:root) {
+      --mobile-contact-offset: 0px;
+    }
+  }
+</style>

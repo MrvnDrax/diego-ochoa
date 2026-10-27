@@ -1,0 +1,305 @@
+---
+import { AdRail } from '@emeza/astro-ad-modules';
+import DoctorPromotionPopup from './DoctorPromotionPopup.astro';
+import {
+  advertising,
+  popupPromotion,
+  railPromotion,
+  leftRailPromotion,
+  mobileRailPromotion,
+} from '@data/advertising';
+---
+
+{advertising.enabled && (
+  <div class="doctor-floating-ads">
+    {advertising.popupEnabled && (
+      <DoctorPromotionPopup
+        promotion={popupPromotion}
+        label="Consultar con Diego Ochoa"
+        frequency={advertising.popupFrequency}
+        delayMs={advertising.popupDelayMs}
+      />
+    )}
+    {advertising.railEnabled && (
+      <>
+        <AdRail
+          promotion={leftRailPromotion}
+          side="left"
+          mobileMode="hide"
+          reopenDelayMs={advertising.railReopenDelayMs}
+          label="Orientación inmobiliaria"
+        />
+        <AdRail
+          promotion={railPromotion}
+          side="right"
+          mobileMode="hide"
+          reopenDelayMs={advertising.railReopenDelayMs}
+          label="Opciones para comprar un inmueble"
+        />
+        <div class="doctor-mobile-ad">
+          <AdRail
+            promotion={mobileRailPromotion}
+            side="right"
+            mobileMode="dock"
+            reopenDelayMs={advertising.railReopenDelayMs}
+            label="Consulta sobre compraventa o crédito"
+          />
+        </div>
+      </>
+    )}
+  </div>
+)}
+
+<script>
+  // A deliberate user action takes precedence over the automatic reading exclusions.
+  document.addEventListener(
+    'click',
+    (event) => {
+      if (!(event.target instanceof Element)) return;
+      const expand = event.target.closest('[data-ad-rail-expand]');
+      const collapse = event.target.closest('[data-ad-rail-collapse]');
+      const root = (expand || collapse)?.closest<HTMLElement>('[data-ad-rail]');
+      if (root) root.dataset.userExpanded = expand ? 'true' : 'false';
+    },
+    true,
+  );
+
+  document.addEventListener('click', (event) => {
+    const trigger =
+      event.target instanceof Element
+        ? event.target.closest('[data-open-doctor-promotion]')
+        : null;
+    if (!trigger) return;
+    const popup = document.querySelector<HTMLDialogElement>('[data-ad-popup]');
+    if (!popup || popup.open || document.querySelector('dialog[open]')) return;
+    popup.showModal();
+    popup.dispatchEvent(
+      new CustomEvent('admodule:open', {
+        bubbles: true,
+        detail: {
+          id: popup.dataset.adId,
+          placement: 'popup',
+          source: 'manual',
+        },
+      }),
+    );
+  });
+</script>
+
+<style>
+  .doctor-floating-ads {
+    --ad-font-body: var(--font-family-body);
+  }
+  /* Retain the artwork ratio; reserve the same gutter in the home page below. */
+  .doctor-floating-ads :global(.ad-rail.ad-rail) {
+    width: min(clamp(10rem, 12vw, 15rem), calc((100svh - 10rem) * 804 / 1956));
+    aspect-ratio: 804 / 1956;
+    height: auto;
+    border: 1px solid #9cc4e4;
+    border-radius: var(--radius-lg);
+    background: #e9f2f9;
+  }
+  .doctor-floating-ads :global(.ad-rail__media img) {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .doctor-floating-ads :global(.ad-rail__close) {
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0.75rem;
+  }
+  .doctor-floating-ads :global(.ad-rail__tab) {
+    background: var(--color-action-whatsapp);
+    color: var(--color-text-on-coral);
+  }
+  .doctor-floating-ads :global(.ad-rail.ad-rail.is-minimized) {
+    width: 2.75rem;
+    height: 7rem;
+    aspect-ratio: auto;
+  }
+  .doctor-floating-ads :global(.ad-popup.ad-popup) {
+    width: min(
+      36rem,
+      calc(100vw - 2rem),
+      calc((var(--visual-viewport-height, 100dvh) - 2rem) * 1080 / 1350)
+    );
+    max-height: calc(var(--visual-viewport-height, 100dvh) - 2rem);
+    overflow: auto;
+    background: #e9f2f9;
+  }
+  .doctor-floating-ads :global(.ad-popup img) {
+    width: 100%;
+    height: auto;
+    max-height: none;
+  }
+  :global(
+    body:has(.consent-banner:not([hidden])) .doctor-floating-ads .ad-rail
+  ) {
+    visibility: hidden;
+    pointer-events: none;
+  }
+  @media (min-width: 1280px) {
+    :global(body:has(.home-with-advertising)) {
+      --home-ad-gutter: calc(clamp(10rem, 12vw, 15rem) + 2rem);
+    }
+    :global(.home-with-advertising) {
+      background: var(--color-background-canvas);
+    }
+    :global(.home-with-advertising > :is(section, .home-campaigns)) {
+      padding-inline: var(--home-ad-gutter);
+    }
+  }
+  @media (max-width: 1279px) {
+    .doctor-floating-ads :global(.ad-rail.ad-rail--left) {
+      display: none;
+    }
+    .doctor-floating-ads :global(.ad-rail.ad-rail--dock) {
+      display: block;
+      --dock-gap: max(1rem, env(safe-area-inset-bottom));
+      width: min(
+        calc(var(--visual-viewport-width, 100vw) - 2rem),
+        32.5rem,
+        calc(
+          (
+              var(--visual-viewport-height, 100dvh) -
+                var(--mobile-contact-offset, 4.5rem) - 7rem
+            ) *
+            3
+        )
+      );
+      max-width: calc(100% - 2rem);
+      height: auto;
+      aspect-ratio: 2172 / 724;
+      left: var(--visual-viewport-center-x, 50%);
+      right: auto;
+      top: calc(
+        var(--visual-viewport-bottom-y, 100dvh) -
+          var(--mobile-contact-offset, 4.5rem) - var(--dock-gap)
+      );
+      bottom: auto;
+      transform: translate(-50%, -100%);
+      transition: none;
+      z-index: 89;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 0.25rem 0.75rem rgb(27 50 95 / 18%);
+    }
+    .doctor-floating-ads :global(.ad-rail.ad-rail--dock.is-minimized) {
+      right: auto;
+      left: var(--visual-viewport-center-x, 50%);
+      top: calc(
+        var(--visual-viewport-bottom-y, 100dvh) -
+          var(--mobile-contact-offset, 0px) - 2rem
+      );
+      bottom: auto;
+      width: 4.75rem;
+      height: 2rem;
+      aspect-ratio: auto;
+      transform: translateX(-50%);
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      box-shadow: 0 -0.25rem 1rem rgb(27 50 95 / 12%);
+      transition: none;
+    }
+    .doctor-floating-ads :global(.ad-rail--dock.is-minimized .ad-rail__tab) {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2rem;
+      font-size: 0.625rem;
+      writing-mode: horizontal-tb;
+      transform: none;
+    }
+  }
+
+  .doctor-mobile-ad {
+    display: none;
+  }
+  @media (max-width: 1279px) {
+    .doctor-mobile-ad {
+      display: block;
+    }
+    .doctor-floating-ads :global(.ad-rail--right:not(.ad-rail--dock)) {
+      display: none;
+    }
+  }
+
+  /* Original site logo: independent vector overlay with pointer events disabled. */
+  .doctor-floating-ads :global(.ad-rail__media),
+  .doctor-floating-ads :global(.ad-popup__link) {
+    position: relative;
+  }
+  .doctor-floating-ads :global(.ad-rail__media::before),
+  .doctor-floating-ads :global(.ad-popup__link::before) {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    pointer-events: none;
+    top: 3%;
+    left: 6%;
+    width: 72%;
+    aspect-ratio: 570 / 104;
+    background: url('/images/advertising/brand-lockup-ink.svg') left center /
+      contain no-repeat;
+  }
+  @media (max-width: 1279px) {
+    .doctor-floating-ads :global(.ad-rail--dock .ad-rail__media::before) {
+      top: 5%;
+      left: 3%;
+      width: 37%;
+    }
+  }
+  .doctor-floating-ads :global(.ad-popup__link::before) {
+    content: none;
+  }
+  .doctor-floating-ads
+    :global(.ad-rail:not(.ad-rail--dock) .ad-rail__media::before) {
+    top: 1%;
+    width: 22%;
+    aspect-ratio: 1;
+    background-image: url('/images/advertising/brand-mark-ink.svg');
+  }
+
+  :global(
+    body:not(:has(.consent-banner:not([hidden])))
+      .doctor-floating-ads
+      .ad-rail.is-minimized[data-obscured='true']
+  ),
+  :global(
+    body:not(:has(.consent-banner:not([hidden])))
+      .doctor-floating-ads
+      .ad-rail[data-user-expanded='true'][data-obscured='true']
+  ) {
+    visibility: visible;
+    pointer-events: auto;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .doctor-floating-ads :global(.ad-rail.ad-rail--dock) {
+      transition: none;
+    }
+  }
+
+  .doctor-floating-ads :global(.ad-rail__close),
+  .doctor-floating-ads :global(.ad-popup__close) {
+    background: #1b325f;
+    color: #fff;
+    border-color: #e9f2f9;
+  }
+  .doctor-floating-ads :global(.ad-rail :is(a, button):focus-visible),
+  .doctor-floating-ads :global(.ad-popup :is(a, button):focus-visible) {
+    outline-color: #f26c4f;
+  }
+  @media (max-width: 1279px) {
+    .doctor-floating-ads :global(.ad-rail--dock .ad-rail__media::before) {
+      content: none;
+    }
+    .doctor-floating-ads :global(.ad-rail--dock .ad-rail__media::after) {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: url('/images/advertising/diego-mobile-overlay.svg') center / 100% 100% no-repeat;
+    }
+  }
+</style>

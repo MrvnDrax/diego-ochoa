@@ -1,0 +1,223 @@
+---
+interface Props {
+  enabled?: boolean;
+  storageKey: string;
+}
+
+const { enabled = false, storageKey }: Props = Astro.props;
+---
+
+{enabled && (
+  <aside
+    class="consent-banner"
+    data-consent-banner
+    aria-labelledby="consent-banner-title"
+    hidden
+  >
+    <div class="consent-banner__content">
+      <div>
+        <p class="consent-banner__eyebrow">TU PRIVACIDAD</p>
+        <h2 id="consent-banner-title">Tú decides sobre la medición</h2>
+        <p class="consent-banner__description">
+          Con tu permiso usamos Google Analytics y Google Ads para entender las
+          visitas y medir qué medios de contacto funcionan. No enviamos a Google
+          lo que escribes en el formulario.
+        </p>
+        <a href="/aviso-de-privacidad/#cookies">Conoce los detalles</a>
+      </div>
+
+      <div class="consent-banner__actions">
+        <button
+          class="consent-banner__button consent-banner__button--secondary"
+          type="button"
+          data-consent-choice="denied"
+        >
+          Solo necesarias
+        </button>
+        <button
+          class="consent-banner__button consent-banner__button--primary"
+          type="button"
+          data-consent-choice="granted"
+        >
+          Aceptar medición
+        </button>
+      </div>
+    </div>
+  </aside>
+)}
+
+{enabled && <script is:inline define:vars={{ storageKey }}>
+  (() => {
+    const banner = document.querySelector('[data-consent-banner]');
+    const settingsButtons = document.querySelectorAll(
+      '[data-consent-settings]',
+    );
+
+    if (!(banner instanceof HTMLElement)) {
+      return;
+    }
+
+    const readChoice = () => {
+      try {
+        const value = localStorage.getItem(storageKey);
+        return value === 'granted' || value === 'denied' ? value : null;
+      } catch {
+        return null;
+      }
+    };
+
+    const openBanner = (moveFocus = false) => {
+      banner.hidden = false;
+
+      if (!moveFocus) {
+        return;
+      }
+
+      const selectedChoice = readChoice();
+      const preferredButton = banner.querySelector(
+        `[data-consent-choice="${selectedChoice || 'granted'}"]`,
+      );
+
+      if (preferredButton instanceof HTMLButtonElement) {
+        window.requestAnimationFrame(() => preferredButton.focus());
+      }
+    };
+
+    const saveChoice = (state) => {
+      try {
+        localStorage.setItem(storageKey, state);
+      } catch {
+        // The choice still applies to this page when storage is unavailable.
+      }
+
+      window.dispatchEvent(
+        new CustomEvent('site:consent', { detail: { state } }),
+      );
+      banner.hidden = true;
+    };
+
+    settingsButtons.forEach((button) => {
+      if (button instanceof HTMLButtonElement) {
+        button.hidden = false;
+        button.addEventListener('click', () => openBanner(true));
+      }
+    });
+
+    banner.querySelectorAll('[data-consent-choice]').forEach((button) => {
+      button.addEventListener('click', () => {
+        if (!(button instanceof HTMLButtonElement)) {
+          return;
+        }
+
+        const state = button.dataset.consentChoice;
+
+        if (state === 'granted' || state === 'denied') {
+          saveChoice(state);
+        }
+      });
+    });
+
+    if (!readChoice()) {
+      openBanner(false);
+    }
+  })();
+</script>}
+
+<style>
+  .consent-banner {
+    position: fixed;
+    z-index: 1900;
+    right: var(--spacing-4);
+    bottom: var(--spacing-4);
+    left: var(--spacing-4);
+    max-width: 52rem;
+    padding: var(--spacing-5);
+    margin-inline: auto;
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-xl);
+    color: var(--color-text-primary);
+    background: var(--color-background-canvas);
+    box-shadow: 0 1rem 3rem rgb(21 17 1 / 24%);
+  }
+
+  .consent-banner[hidden] {
+    display: none;
+  }
+
+  .consent-banner__content {
+    display: grid;
+    gap: var(--spacing-5);
+  }
+
+  .consent-banner__eyebrow {
+    margin: 0 0 var(--spacing-2);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-eyebrow);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-eyebrow);
+  }
+
+  .consent-banner h2 {
+    margin: 0;
+    font-size: var(--font-size-heading-4-mobile);
+    line-height: var(--line-height-heading-4-mobile);
+  }
+
+  .consent-banner__description {
+    margin: var(--spacing-2) 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-body-small);
+  }
+
+  .consent-banner a {
+    color: var(--color-text-link);
+    font-size: var(--font-size-body-small);
+  }
+
+  .consent-banner__actions {
+    display: grid;
+    gap: var(--spacing-2);
+  }
+
+  .consent-banner__button {
+    min-height: 2.75rem;
+    padding: var(--spacing-2) var(--spacing-4);
+    border: 1px solid var(--color-action-primary);
+    border-radius: var(--radius-md);
+    font: inherit;
+    font-size: var(--font-size-label);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+  }
+
+  .consent-banner__button--primary {
+    color: var(--color-text-inverse);
+    background: var(--color-action-primary);
+  }
+
+  .consent-banner__button--secondary {
+    color: var(--color-action-primary);
+    background: transparent;
+  }
+
+  .consent-banner__button:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-border-focus);
+    outline-offset: 2px;
+  }
+
+  @media (min-width: 48rem) {
+    .consent-banner {
+      padding: var(--spacing-6);
+    }
+
+    .consent-banner__content {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
+    }
+
+    .consent-banner__actions {
+      min-width: 12rem;
+    }
+  }
+</style>

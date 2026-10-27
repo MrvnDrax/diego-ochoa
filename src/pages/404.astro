@@ -1,0 +1,13 @@
+---
+import { getEntry } from 'astro:content';
+
+import NotFoundPage from '@components/patterns/NotFoundPage.astro';
+
+const page = await getEntry('pages', 'not-found');
+
+if (!page) {
+  throw new Error('No se encontró el contenido de la página 404.');
+}
+---
+
+<NotFoundPage page={page} />

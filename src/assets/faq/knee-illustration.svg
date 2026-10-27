@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="340" height="390" viewBox="180 390 340 390" fill="none">
+  <title>Rodilla — ilustración FAQ</title>
+  <desc>Recreación vectorial del motivo de rodilla de la propuesta FAQ. Contornos marfil y círculo borgoña en grupos editables, con fondo transparente.</desc>
+  <g id="acento-borgona">
+    <circle cx="371" cy="578" r="133" fill="#65B8A6" fill-opacity="0.48"/>
+  </g>
+  <g id="contornos-rodilla" stroke="#F7F4EE" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+    <g id="silueta">
+      <path d="M202 492 C224 508 245 523 266 540 C284 554 298 568 299 585 C301 604 289 624 280 647 C264 684 255 716 249 752"/>
+      <path d="M340 396 C364 428 388 459 413 490 C437 520 459 543 464 566 C469 589 461 610 452 629 C433 669 421 711 413 752"/>
+    </g>
+    <g id="femur">
+      <path d="M276 437 C296 461 317 483 333 509 C345 528 350 544 342 560 C335 574 334 583 342 591 C351 602 372 596 387 590 C393 587 398 583 403 584 C409 586 414 574 418 565 C425 549 422 535 412 525 C397 512 386 504 375 488 C361 469 350 451 337 435"/>
+      <path d="M293 447 C308 466 325 487 339 508 C352 529 358 546 351 564 C347 575 348 584 358 591" stroke-opacity="0.58" stroke-width="1.8"/>
+      <path d="M391 488 C398 501 410 509 418 519" stroke-opacity="0.66" stroke-width="1.8"/>
+      <path d="M356 570 C352 576 353 580 358 584" stroke-width="2"/>
+    </g>
+    <g id="rotula">
+      <path d="M430 547 C437 541 442 552 443 565 C444 582 435 598 424 602 C418 604 416 598 419 589 C423 576 428 562 430 547 Z"/>
+      <path d="M433 550 C438 561 437 578 428 594" stroke-opacity="0.64" stroke-width="1.8"/>
+    </g>
+    <g id="tibia">
+      <path d="M340 752 C348 716 352 688 347 668 C344 653 333 643 330 628 C326 616 331 604 339 601 C347 598 353 605 365 605 C378 605 388 600 398 600 C408 599 414 605 416 614 C420 632 410 653 407 674 C401 701 397 727 392 752"/>
+      <path d="M354 752 C359 720 364 692 359 670 C357 655 346 645 340 635 C334 625 334 614 342 610 C351 607 356 612 367 611 C380 611 391 604 401 606 C409 608 411 616 411 625" stroke-opacity="0.75" stroke-width="2"/>
+      <path d="M415 612 C425 610 428 623 421 638 C414 654 410 672 407 691" stroke-width="2.2"/>
+      <path d="M401 617 C407 618 409 622 409 627" stroke-opacity="0.6" stroke-width="1.6"/>
+    </g>
+    <g id="perone">
+      <path d="M312 752 C317 722 321 693 317 669 C314 654 314 643 321 638 C326 634 333 638 337 644"/>
+      <path d="M322 751 C326 719 331 692 326 668 C323 655 321 646 328 643" stroke-opacity="0.68" stroke-width="1.8"/>
+    </g>
+  </g>
+</svg>

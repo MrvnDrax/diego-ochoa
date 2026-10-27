@@ -1,0 +1,183 @@
+---
+import Eyebrow from './Eyebrow.astro';
+
+type HeadingLevel = 1 | 2 | 3;
+
+type HeaderAlignment = 'start' | 'center';
+
+type EyebrowAlignment = 'start' | 'center' | 'end';
+
+type DescriptionSize = 'base' | 'large';
+
+type HeaderTone = 'default' | 'inverse';
+
+type EyebrowTone = 'brand' | 'muted' | 'inverse' | 'warm';
+
+interface Props {
+  eyebrow?: string;
+  heading: string;
+  description?: string;
+  level?: HeadingLevel;
+  align?: HeaderAlignment;
+  eyebrowAlign?: EyebrowAlignment;
+  descriptionSize?: DescriptionSize;
+  tone?: HeaderTone;
+  eyebrowTone?: EyebrowTone;
+  class?: string;
+}
+
+const {
+  eyebrow,
+  heading,
+  description,
+  level = 2,
+  align = 'start',
+  eyebrowAlign = 'start',
+  descriptionSize = 'large',
+  tone = 'default',
+  eyebrowTone: eyebrowToneProp,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const headingTags = {
+  1: 'h1',
+  2: 'h2',
+  3: 'h3',
+} as const;
+
+const HeadingTag = headingTags[level];
+
+const eyebrowTone =
+  eyebrowToneProp ?? (tone === 'inverse' ? 'inverse' : 'brand');
+---
+
+<header
+  class:list={[
+    'section-header',
+    `section-header--${align}`,
+    `section-header--eyebrow-${eyebrowAlign}`,
+    `section-header--${tone}`,
+    className,
+  ]}
+  {...rest}
+>
+  {eyebrow && <Eyebrow tone={eyebrowTone}>{eyebrow}</Eyebrow>}
+
+  <HeadingTag
+    class:list={[
+      'section-header__heading',
+      `section-header__heading--level-${level}`,
+    ]}
+  >
+    {heading}
+  </HeadingTag>
+
+  {description && (
+    <p
+      class:list={[
+        'section-header__description',
+        `section-header__description--${descriptionSize}`,
+      ]}
+    >
+      {description}
+    </p>
+  )}
+</header>
+
+<style>
+  .section-header {
+    display: grid;
+    gap: var(--spacing-3);
+  }
+
+  .section-header--start {
+    justify-items: start;
+    text-align: start;
+  }
+
+  .section-header--center {
+    justify-items: center;
+    text-align: center;
+  }
+
+  .section-header--eyebrow-start :global(.eyebrow) {
+    justify-self: start;
+  }
+
+  .section-header--eyebrow-center :global(.eyebrow) {
+    justify-self: center;
+  }
+
+  .section-header--eyebrow-end :global(.eyebrow) {
+    justify-self: end;
+  }
+
+  .section-header__heading {
+    margin: 0;
+    color: var(--color-text-primary);
+  }
+
+  .section-header__heading--level-1 {
+    font-size: var(--font-size-heading-1-mobile);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-heading-1-mobile);
+  }
+
+  .section-header__heading--level-2 {
+    font-size: var(--font-size-heading-2-mobile);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-heading-2-mobile);
+    letter-spacing: -0.0125rem;
+  }
+
+  .section-header__heading--level-3 {
+    font-size: var(--font-size-heading-3-mobile);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-heading-3-mobile);
+  }
+
+  .section-header__description {
+    margin: 0;
+    color: var(--color-text-secondary);
+  }
+
+  .section-header__description--base {
+    font-size: var(--font-size-body-base);
+    line-height: var(--line-height-body-base);
+  }
+
+  .section-header__description--large {
+    font-size: var(--font-size-body-large);
+    line-height: var(--line-height-body-large);
+  }
+
+  .section-header--inverse .section-header__heading,
+  .section-header--inverse .section-header__description {
+    color: var(--color-text-inverse);
+  }
+
+  @media (min-width: 48rem) {
+    .section-header__heading--level-2 {
+      font-size: 2.125rem;
+      line-height: 2.625rem;
+    }
+  }
+
+  @media (min-width: 75rem) {
+    .section-header__heading--level-1 {
+      font-size: var(--font-size-heading-1-desktop);
+      line-height: var(--line-height-heading-1-desktop);
+    }
+
+    .section-header__heading--level-2 {
+      font-size: var(--font-size-heading-2-desktop);
+      line-height: var(--line-height-heading-2-desktop);
+    }
+
+    .section-header__heading--level-3 {
+      font-size: var(--font-size-heading-3-desktop);
+      line-height: var(--line-height-heading-3-desktop);
+    }
+  }
+</style>

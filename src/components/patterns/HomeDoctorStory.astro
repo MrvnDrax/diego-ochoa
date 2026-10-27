@@ -1,0 +1,119 @@
+---
+import { Image } from 'astro:assets';
+import surgery from '@assets/diego/property-consultation.png';
+import Icon from '@components/ui/Icon.astro';
+import { credentials } from '@data/credentials';
+---
+
+<section
+  class="doctor-story"
+  id="conoce-al-doctor"
+  aria-labelledby="doctor-story-heading"
+>
+  <div class="container doctor-story__grid">
+    <div class="doctor-story__image">
+      <Image
+        src={surgery}
+        alt="Conversación sobre una operación inmobiliaria"
+        loading="lazy"
+        widths={[500, 800, 1100]}
+        sizes="(max-width:767px) 92vw, 45vw"
+      />
+    </div>
+    <div class="doctor-story__copy">
+      <p class="editorial-label">Orientación detrás de cada decisión</p>
+      <h2 id="doctor-story-heading">
+        Claridad para avanzar.
+        <br />
+        <em>Tiempo para entender.</em>
+      </h2>
+      <p>
+        Diego Ochoa es abogado enfocado en gestiones de bienes raíces en Villahermosa, Tabasco, incluidas consultas sobre compraventa, crédito para terreno, Infonavit y Mejoravit.
+      </p>
+      <p>
+        Su enfoque comienza por escuchar qué quieres lograr, revisar la información disponible y explicarte las etapas y documentos que pueden intervenir en tu gestión.
+      </p>
+      <a href="/diego-ochoa">
+        Conocer su enfoque de trabajo{' '}
+        <Icon name="arrow-right" size="small" />
+      </a>
+      <p class="doctor-story__credentials">
+        {credentials.map((item) => item.label + ' ' + item.value).join('. ')}.
+      </p>
+    </div>
+  </div>
+</section>
+<style>
+  .doctor-story {
+    background: white;
+    padding-block: clamp(3.5rem, 6vw, 6rem);
+    color: #1b325f;
+  }
+  .doctor-story__grid {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+  }
+  .doctor-story__image {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+  }
+  .doctor-story__image :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-position: center 40%;
+    object-fit: cover;
+  }
+  .doctor-story__copy {
+    display: grid;
+    gap: 1.15rem;
+  }
+  .editorial-label {
+    font-size: 0.72rem !important;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #37648c !important;
+  }
+  h2 {
+    font-size: clamp(2rem, 3.1vw, 3rem);
+    font-weight: 500;
+    line-height: 1.14;
+    letter-spacing: -0.025em;
+  }
+  h2 em {
+    color: #37648c;
+    font-weight: 400;
+  }
+  .doctor-story__copy > p {
+    color: #53677d;
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+  .doctor-story__copy > a {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-weight: 600;
+    text-decoration: none;
+    width: fit-content;
+    padding-block: 0.5rem;
+    border-bottom: 1px solid #9cc4e4;
+  }
+  .doctor-story__copy > .doctor-story__credentials {
+    font-size: 0.8125rem;
+    line-height: 1.65;
+    color: #53677d;
+    max-width: 38rem;
+  }
+  @media (min-width: 48rem) {
+    .doctor-story__grid {
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: clamp(2rem, 5vw, 5rem);
+    }
+  }
+</style>

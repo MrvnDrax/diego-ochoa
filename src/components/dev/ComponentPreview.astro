@@ -1,0 +1,174 @@
+---
+import BrandLogo from '@components/brand/BrandLogo.astro';
+import SocialLink from '@components/brand/SocialLink.astro';
+import ServiceCard from '@components/cards/ServiceCard.astro';
+
+import Badge from '@components/ui/Badge.astro';
+import Button from '@components/ui/Button.astro';
+import Container from '@components/ui/Container.astro';
+import Eyebrow from '@components/ui/Eyebrow.astro';
+import Icon from '@components/ui/Icon.astro';
+import IconButton from '@components/ui/IconButton.astro';
+import Section from '@components/ui/Section.astro';
+import SectionHeader from '@components/ui/SectionHeader.astro';
+
+import { socialLinks } from '@data/social-links';
+
+import dolorRodillaImage from '@assets/diego/home-interior.png';
+import LocationExplorer from '@components/patterns/LocationExplorer.astro';
+import FaqNavigator from '@components/patterns/FaqNavigator.astro';
+---
+
+<Section id="ui-components" tone="subtle">
+  <Container class="component-preview">
+    <SectionHeader
+      eyebrow="Sistema visual"
+      heading="Componentes fundamentales"
+      description="Elementos base que utilizaremos para construir las páginas."
+      level={2}
+      align="center"
+    />
+
+    <div class="preview-row">
+      <Eyebrow>Predeterminado</Eyebrow>
+
+      <Eyebrow tone="muted">Información complementaria</Eyebrow>
+    </div>
+
+    <div class="component-row">
+      <Button>Agendar cita</Button>
+
+      <Button variant="secondary">Ver ubicaciones</Button>
+
+      <Button variant="ghost">Conocer más</Button>
+
+      <Button variant="whatsapp">Agendar por WhatsApp</Button>
+
+      <Button disabled>Acción deshabilitada</Button>
+    </div>
+
+    <div class="component-row">
+      <Badge>Certificación vigente</Badge>
+
+      <Badge tone="accent">Consulta presencial</Badge>
+
+      <Badge tone="success">Disponible</Badge>
+    </div>
+
+    <div class="component-row">
+      <IconButton label="Pregunta anterior">
+        <Icon name="chevron-left" />
+      </IconButton>
+
+      <IconButton label="Pregunta siguiente">
+        <Icon name="chevron-right" />
+      </IconButton>
+    </div>
+
+    <div class="brand-preview">
+      <BrandLogo variant="mark" markSize={96} />
+
+      <BrandLogo variant="compact" />
+
+      <BrandLogo variant="lockup" tone="navy" />
+
+      <div class="brand-preview__inverse">
+        <BrandLogo variant="stacked" tone="inverse" />
+      </div>
+    </div>
+
+    <div class="social-preview">
+      {socialLinks.map((link) => (
+        <SocialLink link={link} />
+      ))}
+    </div>
+
+    <section class="service-preview">
+      <ServiceCard
+        title="Compra de vivienda"
+        summary="Orientación en documentos y pasos de compra"
+        href="/servicios"
+        image={dolorRodillaImage}
+        imageAlt="Interior de una vivienda"
+      />
+    </section>
+
+    <!-- <section class="location-preview">
+      {
+        primaryLocation && (
+          <LocationCard location={primaryLocation} />
+        )
+      }
+    </section> -->
+
+    <LocationExplorer />
+
+    <section class="faq-preview">
+      <FaqNavigator />
+    </section>
+  </Container>
+</Section>
+
+<style>
+  .component-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .preview-row,
+  .component-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-4);
+    margin-block-start: var(--spacing-8);
+  }
+
+  .brand-preview {
+    display: grid;
+    justify-items: center;
+    width: 100%;
+    gap: var(--spacing-8);
+    margin-block-start: var(--spacing-8);
+    background-color: var(--color-background-canvas);
+  }
+
+  .brand-preview__inverse {
+    display: grid;
+    width: 100%;
+    padding: var(--spacing-8);
+    background-color: var(--color-background-strong);
+    place-items: center;
+  }
+
+  .social-preview {
+    display: grid;
+    width: min(100%, 41rem);
+    padding: var(--spacing-3);
+    gap: var(--spacing-3);
+    margin-block-start: var(--spacing-8);
+    margin-inline: auto;
+    border-radius: var(--radius-xl);
+    background-color: var(--color-background-strong);
+  }
+
+  .service-preview {
+    width: min(100%, 22.375rem);
+    margin-inline: auto;
+  }
+
+  .location-preview {
+    width: min(100%, 22.375rem);
+    margin-inline: auto;
+  }
+
+  .faq-preview {
+    display: grid;
+    width: 100%;
+    align-self: stretch;
+    margin-block-start: var(--spacing-8);
+    place-items: center;
+  }
+</style>

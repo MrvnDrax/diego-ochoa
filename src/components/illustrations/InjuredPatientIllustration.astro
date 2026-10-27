@@ -1,0 +1,67 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className }: Props = Astro.props;
+---
+
+<svg
+  class:list={['injured-patient-illustration', className]}
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 340 390"
+  fill="none"
+  preserveAspectRatio="xMidYMid meet"
+  aria-hidden="true"
+  focusable="false"
+>
+  <g data-faq-wave-layer="accent">
+    <path
+      d="M170 317C234.065 317 286 265.065 286 201C286 136.935 234.065 85 170 85C105.935 85 54 136.935 54 201C54 265.065 105.935 317 170 317Z"
+      fill="#B65A4A"
+      fill-opacity="0.55"
+    />
+  </g>
+
+  <g
+    data-faq-wave-layer="figure"
+    stroke="#F7F4EE"
+    stroke-width="3.2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M122 104V82C122 52 143 31 171 31C199 31 220 52 220 82V104" />
+    <path d="M123 105V150C123 181 142 201 171 201C200 201 219 181 219 150V106" />
+    <path d="M123 115C138 116 151 113 165 106C176 101 186 94 194 86L219 107" />
+    <path d="M123 118C111 114 103 123 103 135C103 147 111 156 123 152" />
+    <path d="M219 118C231 114 239 123 239 135C239 147 231 156 219 152" />
+    <path d="M148 197V217L171 234L194 217V197" />
+    <path d="M148.002 211L105.002 226C78.0018 236 66.0018 257 64.0018 289L61.0018 331C60.0018 344 68.0018 352 82.0018 352H119.002" />
+    <path d="M194 211L237 226C264 236 276 257 278 289V352H229" />
+    <path d="M105 226L112 352" />
+    <path d="M237 226L221 272" />
+    <path d="M213 285L238 352" />
+    <path d="M113 218L159 352" />
+    <path d="M128 213L177 328" />
+    <path d="M206 214L169 282" />
+    <path d="M117 285H211" />
+    <path d="M211 285C231 285 244 297 244 315C244 333 231 345 213 345C195 345 183 334 183 319V285" />
+    <path d="M165 285V348" />
+    <path d="M140 285L152 352" />
+    <path d="M214 230L197 281" />
+  </g>
+</svg>
+
+<style>
+  .injured-patient-illustration {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .injured-patient-illustration [data-faq-wave-layer] {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+</style>

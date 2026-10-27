@@ -1,0 +1,328 @@
+---
+import BrandLogo from '@components/brand/BrandLogo.astro';
+import Button from '@components/ui/Button.astro';
+import Icon from '@components/ui/Icon.astro';
+import WhatsAppIcon from '@components/brand/WhatsAppIcon.astro';
+import { mainNavigation } from '@data/navigation';
+import { generalWhatsAppHref } from '@data/whatsapp-messages';
+
+interface Props {
+  currentPath?: string;
+  menuId?: string;
+}
+const {
+  currentPath = Astro.url.pathname,
+  menuId = 'mobile-navigation-dialog',
+}: Props = Astro.props;
+function isCurrentPath(href: string): boolean {
+  return href === '/'
+    ? currentPath === '/'
+    : currentPath === href || currentPath.startsWith(`${href}/`);
+}
+---
+
+<div class="mobile-navigation" data-mobile-menu-root>
+  <div class="mobile-navigation__bar">
+    <a
+      href="/"
+      class="mobile-navigation__brand"
+      aria-label="Diego Ochoa, ir al inicio"
+    >
+      <BrandLogo variant="compact" />
+    </a>
+    <button
+      type="button"
+      class="mobile-navigation__trigger"
+      aria-label="Abrir menú principal"
+      aria-controls={menuId}
+      aria-expanded="false"
+      data-mobile-menu-trigger
+    >
+      <span class="mobile-navigation__trigger-icon" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+  </div>
+  <dialog
+    id={menuId}
+    class="mobile-menu"
+    aria-label="Menú principal"
+    data-mobile-menu-dialog
+  >
+    <div class="mobile-menu__panel">
+      <div class="mobile-menu__top">
+        <a href="/" class="mobile-menu__brand" aria-label="Ir al inicio">
+          <BrandLogo variant="compact" />
+        </a>
+        <button
+          type="button"
+          class="mobile-menu__close"
+          aria-label="Cerrar menú principal"
+          data-mobile-menu-close
+        >
+          <Icon name="close" size="medium" />
+        </button>
+      </div>
+      <p class="mobile-menu__eyebrow">Gestiones inmobiliarias · Sureste de México</p>
+      <nav aria-label="Navegación móvil">
+        <ul class="mobile-menu__list">
+          {mainNavigation.map((item) => {
+            const isCurrent = isCurrentPath(item.href);
+            return (
+              <li>
+                <a
+                  href={item.href}
+                  class:list={[
+                    'mobile-menu__link',
+                    isCurrent && 'mobile-menu__link--current',
+                  ]}
+                  aria-current={isCurrent ? 'page' : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+      <div class="mobile-menu__contact">
+        <p>Da el primer paso para cuidar tu patrimonio.</p>
+        <Button
+          href={generalWhatsAppHref}
+          variant="primary"
+          target="_blank"
+          fullWidth
+        >
+          <WhatsAppIcon slot="icon-start" />
+          Escribir por WhatsApp
+        </Button>
+        <span>Tabasco · Chiapas · Veracruz</span>
+      </div>
+    </div>
+  </dialog>
+</div>
+
+<script>
+  import '@scripts/mobile-menu';
+</script>
+
+<style>
+  .mobile-navigation {
+    display: block;
+    width: 100%;
+    background: #fff;
+    border-bottom: 1px solid #dce5ed;
+  }
+  .mobile-navigation__bar {
+    display: flex;
+    width: 100%;
+    height: 4.25rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-inline: var(--layout-gutter);
+  }
+  .mobile-navigation__brand,
+  .mobile-menu__brand {
+    display: inline-flex;
+    color: inherit;
+    text-decoration: none;
+  }
+  .mobile-navigation__brand :global(.brand-logo--compact),
+  .mobile-menu__brand :global(.brand-logo--compact) {
+    padding: 0;
+    width: auto;
+  }
+  .mobile-navigation__trigger {
+    display: flex;
+    min-width: 2.75rem;
+    height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    color: #1b325f;
+    border: 0;
+    border-radius: var(--radius-md);
+    background: transparent;
+    cursor: pointer;
+  }
+  .mobile-navigation__trigger:hover {
+    background: #e9f2f9;
+  }
+  .mobile-navigation__trigger-icon {
+    position: relative;
+    display: block;
+    width: 1.25rem;
+    height: 1rem;
+  }
+  .mobile-navigation__trigger-icon span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: currentColor;
+    transition:
+      transform 160ms ease,
+      opacity 160ms ease;
+  }
+  .mobile-navigation__trigger-icon span:nth-child(1) {
+    top: 0;
+  }
+  .mobile-navigation__trigger-icon span:nth-child(2) {
+    top: calc(50% - 1px);
+  }
+  .mobile-navigation__trigger-icon span:nth-child(3) {
+    bottom: 0;
+  }
+  .mobile-navigation__trigger[aria-expanded='true']
+    .mobile-navigation__trigger-icon
+    span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .mobile-navigation__trigger[aria-expanded='true']
+    .mobile-navigation__trigger-icon
+    span:nth-child(2) {
+    opacity: 0;
+  }
+  .mobile-navigation__trigger[aria-expanded='true']
+    .mobile-navigation__trigger-icon
+    span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+  .mobile-menu {
+    width: min(100%, 30rem);
+    height: 100dvh;
+    max-width: none;
+    max-height: 100dvh;
+    margin: 0 0 0 auto;
+    padding: 0;
+    overflow-y: auto;
+    color: #1b325f;
+    border: 0;
+    border-radius: 0;
+    background: #fff;
+    box-shadow: -16px 0 64px rgb(27 50 95 / 12%);
+  }
+  .mobile-menu::backdrop {
+    background: rgb(27 50 95 / 54%);
+  }
+  .mobile-menu[open] {
+    animation: mobile-menu-enter 200ms ease-out both;
+  }
+  .mobile-menu__panel {
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
+    padding: 1rem 1.5rem max(1.5rem, env(safe-area-inset-bottom));
+  }
+  .mobile-menu__top {
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .mobile-menu__close {
+    display: flex;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0.375rem;
+    color: #1b325f;
+    border: 0;
+    border-radius: var(--radius-md);
+    background: transparent;
+    cursor: pointer;
+  }
+  .mobile-menu__close:hover {
+    background: #e9f2f9;
+  }
+  .mobile-menu__eyebrow {
+    margin: 1.75rem 0 1rem;
+    color: #53657e;
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .mobile-menu__list {
+    display: grid;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    border-top: 1px solid #dce5ed;
+  }
+  .mobile-menu__link {
+    display: flex;
+    min-height: 3.625rem;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 0.75rem;
+    color: #1b325f;
+    border-bottom: 1px solid #dce5ed;
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1.4;
+    text-decoration: none;
+  }
+  .mobile-menu__link:hover,
+  .mobile-menu__link--current {
+    color: #1b325f;
+    font-weight: 700;
+  }
+  .mobile-menu__contact {
+    display: grid;
+    gap: 0.875rem;
+    margin-top: auto;
+    padding-top: 2rem;
+  }
+  .mobile-menu__contact p {
+    max-width: 18rem;
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  .mobile-menu__contact :global(.button) {
+    min-width: 0;
+    border-radius: var(--radius-md);
+    background: var(--color-action-whatsapp);
+    color: var(--color-text-on-coral);
+    font-weight: var(--font-weight-bold);
+  }
+  .mobile-menu__contact :global(.button:hover) {
+    background: var(--color-action-whatsapp-hover);
+  }
+  .mobile-menu__contact > span {
+    color: #53657e;
+    font-size: 0.75rem;
+  }
+  @keyframes mobile-menu-enter {
+    from {
+      opacity: 0;
+      transform: translateX(1rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  @media (max-width: 22rem) {
+    .mobile-menu__panel {
+      padding-inline: 1rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-navigation__trigger-icon span,
+    .mobile-menu[open] {
+      animation: none;
+      transition: none;
+    }
+  }
+  @media (min-width: 75rem) {
+    .mobile-navigation {
+      display: none;
+    }
+  }
+</style>

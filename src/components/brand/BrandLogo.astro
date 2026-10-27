@@ -1,0 +1,234 @@
+---
+import logoMarkColor from '@assets/brand/logo-mark-color.svg';
+import logoMarkInverse from '@assets/brand/logo-mark-inverse.svg';
+import logoMarkNavy from '@assets/brand/logo-mark-navy.svg';
+
+type BrandLogoVariant = 'mark' | 'compact' | 'lockup' | 'stacked';
+
+type BrandLogoTone = 'color' | 'navy' | 'inverse';
+
+type MarkSize = 24 | 32 | 48 | 72 | 96 | 112;
+
+interface Props {
+  variant?: BrandLogoVariant;
+  tone?: BrandLogoTone;
+  markSize?: MarkSize;
+  withSpecialty?: boolean;
+  class?: string;
+}
+
+const {
+  variant = 'compact',
+  tone = 'color',
+  markSize = 112,
+  withSpecialty = false,
+  class: className,
+}: Props = Astro.props;
+
+const logoMarks = {
+  color: logoMarkColor,
+  navy: logoMarkNavy,
+  inverse: logoMarkInverse,
+} as const;
+
+const markDimensions = {
+  mark: markSize,
+  compact: 36,
+  lockup: 104,
+  stacked: 128,
+} as const;
+
+const logoMark = logoMarks[tone];
+const dimensions = markDimensions[variant];
+
+const showsName = variant !== 'mark';
+const showsSpecialty =
+  withSpecialty || variant === 'lockup' || variant === 'stacked';
+const showsDivider = variant === 'lockup';
+---
+
+<span
+  class:list={[
+    'brand-logo',
+    `brand-logo--${variant}`,
+    `brand-logo--${tone}`,
+    withSpecialty && 'brand-logo--with-specialty',
+    className,
+  ]}
+  style={`--brand-logo-mark-size: ${dimensions}px`}
+>
+  <span class="brand-logo__mark">
+    <img
+      src={logoMark.src}
+      width={dimensions}
+      height={dimensions}
+      alt={
+        variant === 'mark' ? 'Diego Ochoa, gestiones inmobiliarias' : ''
+      }
+      aria-hidden={variant === 'mark' ? undefined : 'true'}
+    />
+  </span>
+
+  {showsDivider && <span class="brand-logo__divider" aria-hidden="true" />}
+
+  {showsName && (
+    <span class="brand-logo__wordmark">
+      <span class="brand-logo__name">
+        <span>Diego</span>
+        
+        <span> Ochoa</span>
+      </span>
+
+      {showsSpecialty && (
+        <span class="brand-logo__specialty">GESTIONES INMOBILIARIAS</span>
+      )}
+    </span>
+  )}
+</span>
+
+<style>
+  .brand-logo {
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-logo-default);
+  }
+
+  .brand-logo__mark {
+    display: block;
+    flex: none;
+    width: var(--brand-logo-mark-size);
+    height: var(--brand-logo-mark-size);
+    overflow: hidden;
+  }
+
+  .brand-logo__mark img {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .brand-logo__wordmark {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .brand-logo__name,
+  .brand-logo__specialty {
+    font-weight: var(--font-weight-semibold);
+    white-space: nowrap;
+  }
+
+  .brand-logo__dot {
+    color: inherit;
+  }
+
+  .brand-logo--color .brand-logo__dot {
+    color: var(--color-logo-accent);
+  }
+
+  .brand-logo--navy {
+    color: var(--color-logo-default);
+  }
+
+  .brand-logo--inverse {
+    color: var(--color-logo-inverse);
+  }
+
+  .brand-logo--compact {
+    width: 12.5rem;
+    height: 2.75rem;
+    padding: var(--spacing-1) var(--spacing-2);
+    gap: var(--spacing-2);
+  }
+
+  .brand-logo--compact .brand-logo__name {
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body-base);
+    line-height: var(--line-height-body-small);
+  }
+
+  .brand-logo--compact.brand-logo--with-specialty {
+    width: auto;
+    height: auto;
+    min-height: 2.75rem;
+    padding: 0;
+  }
+
+  .brand-logo--compact.brand-logo--with-specialty .brand-logo__wordmark {
+    gap: 0.125rem;
+  }
+
+  .brand-logo--compact.brand-logo--with-specialty .brand-logo__specialty {
+    font-size: 0.625rem;
+    line-height: 1.2;
+    letter-spacing: 0.06em;
+  }
+
+  .brand-logo--lockup {
+    min-height: 7.5rem;
+    padding: var(--spacing-2);
+    gap: var(--spacing-6);
+  }
+
+  .brand-logo__divider {
+    flex: none;
+    width: 2px;
+    height: 5.5rem;
+    background-color: var(--color-logo-accent);
+  }
+
+  .brand-logo--navy .brand-logo__divider {
+    background-color: var(--color-logo-default);
+  }
+
+  .brand-logo--inverse .brand-logo__divider {
+    background-color: var(--color-logo-inverse);
+  }
+
+  .brand-logo--lockup .brand-logo__wordmark {
+    gap: 2px;
+  }
+
+  .brand-logo--lockup .brand-logo__name {
+    font-family: var(--font-family-heading);
+    font-size: 2.5rem;
+    line-height: 1.2;
+  }
+
+  .brand-logo--lockup .brand-logo__specialty {
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-body-base);
+    line-height: var(--line-height-body-small);
+    letter-spacing: 1.2px;
+  }
+
+  .brand-logo--stacked {
+    flex-direction: column;
+    justify-content: center;
+    width: min(20rem, 100%);
+    min-height: 15.75rem;
+    max-width: 100%;
+    padding: var(--spacing-6);
+    gap: var(--spacing-4);
+    text-align: center;
+  }
+
+  .brand-logo--stacked .brand-logo__wordmark {
+    align-items: center;
+    gap: var(--spacing-1);
+    width: 100%;
+  }
+
+  .brand-logo--stacked .brand-logo__name {
+    font-family: var(--font-family-heading);
+    font-size: 1.75rem;
+    line-height: 2.125rem;
+  }
+
+  .brand-logo--stacked .brand-logo__specialty {
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-caption);
+    line-height: var(--line-height-caption);
+    letter-spacing: 1.2px;
+  }
+</style>

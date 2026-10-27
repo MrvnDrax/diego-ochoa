@@ -1,0 +1,210 @@
+---
+import Container from '@components/ui/Container.astro';
+import Section from '@components/ui/Section.astro';
+import SectionHeader from '@components/ui/SectionHeader.astro';
+
+type SectionTone = 'canvas' | 'subtle' | 'brand-subtle' | 'warm' | 'strong';
+
+type SectionSpacing = 'compact' | 'default' | 'large';
+
+type SectionLayout = 'stack' | 'split' | 'grid' | 'compact';
+
+type SectionShape = 'none' | 'editorial' | 'editorial-reverse';
+
+type HeaderAlignment = 'start' | 'center';
+
+type EyebrowAlignment = 'start' | 'center' | 'end';
+
+type DescriptionSize = 'base' | 'large';
+
+type HeadingLevel = 1 | 2 | 3;
+
+type EyebrowTone = 'brand' | 'muted' | 'inverse' | 'warm';
+
+interface Props {
+  id?: string;
+  eyebrow?: string;
+  heading: string;
+  description?: string;
+  level?: HeadingLevel;
+  tone?: SectionTone;
+  spacing?: SectionSpacing;
+  layout?: SectionLayout;
+  shape?: SectionShape;
+  align?: HeaderAlignment;
+  eyebrowAlign?: EyebrowAlignment;
+  eyebrowTone?: EyebrowTone;
+  descriptionSize?: DescriptionSize;
+  class?: string;
+  contentClass?: string;
+}
+
+const {
+  id,
+  eyebrow,
+  heading,
+  description,
+  level = 2,
+  tone = 'canvas',
+  spacing = 'default',
+  layout = 'stack',
+  shape = 'none',
+  align = 'start',
+  eyebrowAlign = 'start',
+  eyebrowTone,
+  descriptionSize = 'base',
+  class: className,
+  contentClass,
+  ...rest
+}: Props = Astro.props;
+
+const headerTone = tone === 'strong' ? 'inverse' : 'default';
+---
+
+<Section
+  id={id}
+  tone={tone}
+  spacing="none"
+  class:list={[
+    'content-section',
+    `content-section--spacing-${spacing}`,
+    `content-section--layout-${layout}`,
+    `content-section--shape-${shape}`,
+    `content-section--align-${align}`,
+    className,
+  ]}
+  {...rest}
+>
+  <Container class="content-section__container">
+    <SectionHeader
+      class="content-section__header"
+      eyebrow={eyebrow}
+      heading={heading}
+      description={description}
+      level={level}
+      align={align}
+      eyebrowAlign={eyebrowAlign}
+      eyebrowTone={eyebrowTone}
+      descriptionSize={descriptionSize}
+      tone={headerTone}
+    />
+
+    <div class:list={['content-section__content', contentClass]}>
+      <slot />
+    </div>
+  </Container>
+</Section>
+
+<style>
+  :global(.content-section) {
+    overflow: hidden;
+  }
+
+  :global(.content-section__container) {
+    display: grid;
+    gap: var(--layout-section-content-gap);
+  }
+
+  :global(.content-section__header) {
+    width: 100%;
+    min-width: 0;
+    gap: var(--spacing-4);
+  }
+
+  :global(.content-section__content) {
+    width: 100%;
+    min-width: 0;
+  }
+
+  :global(.content-section--layout-stack .content-section__content) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  :global(.content-section--layout-grid .content-section__content) {
+    display: grid;
+    gap: var(--layout-column-gap);
+  }
+
+  :global(.content-section--layout-split .content-section__content) {
+    display: grid;
+    gap: var(--spacing-6);
+  }
+
+  :global(.content-section--layout-compact .content-section__content) {
+    width: min(100%, 46rem);
+  }
+
+  :global(.content-section--align-center .content-section__header) {
+    width: min(100%, 46rem);
+    margin-inline: auto;
+    justify-items: center;
+    text-align: center;
+  }
+
+  :global(.content-section--align-center .content-section__container) {
+    justify-items: center;
+  }
+
+  :global(.content-section--align-center .content-section__content) {
+    justify-self: center;
+  }
+
+  :global(.content-section--spacing-compact .content-section__container) {
+    padding-block: var(--spacing-6);
+  }
+
+  :global(.content-section--spacing-default .content-section__container) {
+    padding-block: var(--spacing-8);
+  }
+
+  :global(.content-section--spacing-large .content-section__container) {
+    padding-block: var(--spacing-12);
+  }
+
+  :global(.content-section--shape-editorial) {
+    border-radius: var(--radius-xl);
+  }
+
+  :global(.content-section--shape-editorial-reverse) {
+    border-radius: var(--radius-xl);
+  }
+
+  @media (min-width: 48rem) {
+    :global(.content-section--layout-split .content-section__content) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: center;
+    }
+
+    :global(.content-section--spacing-compact .content-section__container) {
+      padding-block: var(--spacing-8);
+    }
+
+    :global(.content-section--spacing-default .content-section__container) {
+      padding-block: var(--spacing-12);
+    }
+
+    :global(.content-section--spacing-large .content-section__container) {
+      padding-block: var(--spacing-16);
+    }
+
+    :global(.content-section--shape-editorial),
+    :global(.content-section--shape-editorial-reverse) {
+      border-radius: var(--radius-xl);
+    }
+  }
+
+  @media (min-width: 75rem) {
+    :global(.content-section--spacing-compact .content-section__container) {
+      padding-block: var(--spacing-10);
+    }
+
+    :global(.content-section--spacing-default .content-section__container) {
+      padding-block: var(--spacing-16);
+    }
+
+    :global(.content-section--spacing-large .content-section__container) {
+      padding-block: var(--spacing-20);
+    }
+  }
+</style>

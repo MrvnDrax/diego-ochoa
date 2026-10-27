@@ -1,0 +1,107 @@
+---
+import Button from '@components/ui/Button.astro';
+import WhatsAppIcon from '@components/brand/WhatsAppIcon.astro';
+import ContentSection from '@components/patterns/ContentSection.astro';
+import InsuranceMarquee from '@components/patterns/InsuranceMarquee.astro';
+
+import { createWhatsAppHref } from '@data/whatsapp-messages';
+
+interface Props {
+  id?: string;
+}
+
+const { id = 'seguros' }: Props = Astro.props;
+
+const coverageWhatsAppHref = createWhatsAppHref(
+  'Hola, Diego. Quiero saber si me puedes orientar en una gestión inmobiliaria.',
+);
+---
+
+<ContentSection
+  id={id}
+  class="insurance-section"
+  contentClass="insurance-section__content"
+  eyebrow="Tu gestión, paso a paso"
+  eyebrowTone="warm"
+  heading="Claridad en cada etapa"
+  description="Primero entendemos tu objetivo. Después revisamos la información disponible y ubicamos los siguientes pasos para tu gestión."
+  tone="strong"
+  align="center"
+  eyebrowAlign="center"
+  shape="editorial-reverse"
+>
+  <InsuranceMarquee />
+  <p class="insurance-section__disclaimer">
+    Los requisitos, tiempos y condiciones dependen de cada operación y de la institución correspondiente.
+  </p>
+
+  <div class="insurance-section__contact">
+    <p class="insurance-section__helper">
+      ¿Tienes una compra, un terreno o un trámite en mente? Cuéntanos tu caso.
+    </p>
+
+    <div class="insurance-section__action">
+      <Button
+        href={coverageWhatsAppHref}
+        variant="whatsapp-outline"
+        target="_blank"
+        fullWidth
+        ariaLabel="Consultar mi gestión por WhatsApp"
+      >
+        <WhatsAppIcon slot="icon-start" />
+        Consultar mi caso
+      </Button>
+    </div>
+  </div>
+</ContentSection>
+
+<style>
+  :global(.insurance-section .content-section__container) {
+    padding-block: var(--spacing-12);
+  }
+
+  :global(.insurance-section__content) {
+    display: grid;
+    gap: var(--spacing-5);
+  }
+
+  .insurance-section__disclaimer {
+    max-width: 52rem;
+    margin-inline: auto;
+    color: #c8d9ea;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    text-align: center;
+  }
+
+  .insurance-section__contact {
+    display: grid;
+    justify-items: center;
+    gap: var(--spacing-3);
+  }
+
+  .insurance-section__helper {
+    max-width: 34rem;
+    margin: 0;
+    color: var(--color-text-inverse);
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-body-small);
+  }
+
+  .insurance-section__action {
+    width: min(100%, 22.5rem);
+  }
+
+  @media (min-width: 48rem) {
+    .insurance-section__contact {
+      justify-items: center;
+      text-align: center;
+    }
+  }
+
+  @media (min-width: 75rem) {
+    :global(.insurance-section .content-section__container) {
+      padding-block: var(--spacing-16);
+    }
+  }
+</style>

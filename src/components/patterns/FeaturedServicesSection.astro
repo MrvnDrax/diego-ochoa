@@ -1,0 +1,232 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import { getServiceVisual } from '@data/service-visuals';
+import { generalWhatsAppHref } from '@data/whatsapp-messages';
+import Icon from '@components/ui/Icon.astro';
+interface Props {
+  id?: string;
+  eyebrow?: string;
+  heading?: string;
+  description?: string;
+  level?: 1 | 2 | 3;
+  class?: string;
+}
+const {
+  id = 'servicios-destacados',
+  eyebrow = 'Opciones para tu proyecto',
+  heading = '¿Qué necesitas resolver?',
+  description = 'Explora las gestiones que podemos revisar contigo. Cada caso comienza con una conversación.',
+  level = 2,
+  class: className,
+}: Props = Astro.props;
+const Heading = level === 1 ? 'h1' : level === 3 ? 'h3' : 'h2';
+const order = [
+  'credito-infonavit',
+  'credito-terreno',
+  'compra-vivienda',
+  'mejoravit',
+  'revision-documental',
+  'gestion-inmobiliaria',
+];
+const labels: Record<string, string> = {
+  'credito-infonavit': 'Crédito para vivienda',
+  'credito-terreno': 'Comprar un terreno',
+  'compra-vivienda': 'Comprar una casa',
+  mejoravit: 'Mejorar tu vivienda',
+  'revision-documental': 'Revisar documentos',
+  'gestion-inmobiliaria': 'Gestionar un trámite',
+};
+const services = (
+  await getCollection('services', ({ data }) => data.featured)
+).sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+---
+
+<section id={id} class:list={['featured-services', className]}>
+  <div class="container">
+    <header class="featured-services__header">
+      <div>
+        <p class="featured-services__eyebrow">{eyebrow}</p>
+        <Heading>{heading}</Heading>
+      </div>
+      <p>{description}</p>
+    </header>
+    <div class="featured-services__grid">
+      {services.map((service) => {
+        const visual = getServiceVisual(
+          service.data.media.key,
+          service.data.media.alt,
+        );
+        return (
+          <a class="care-link" href={'/servicios/' + service.id}>
+            <div class="care-link__image">
+              <Image
+                src={visual.hero.image}
+                alt={visual.hero.alt}
+                widths={[360, 600, 900]}
+                sizes="(max-width: 607px) calc(100vw - 2rem), (max-width: 1039px) 46vw, (max-width: 1279px) 30vw, 25vw"
+                loading="lazy"
+              />
+            </div>
+            <div class="care-link__body">
+              <p class="care-link__concern">{labels[service.id]}</p>
+              <h3>{service.data.card.title}</h3>
+              <div class="care-link__end">
+                <span>Conoce las opciones</span>
+                <Icon name="arrow-right" size="small" />
+              </div>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+    <div class="featured-services__help">
+      <p>¿No sabes qué atención necesitas?</p>
+      <a href={generalWhatsAppHref} target="_blank" rel="noopener noreferrer">
+        Cuéntanos el motivo de tu consulta{' '}
+        <Icon name="arrow-right" size="small" />
+      </a>
+    </div>
+  </div>
+</section>
+<style>
+  .featured-services {
+    background: #fff;
+    padding-block: clamp(3.5rem, 6vw, 6rem);
+    color: #1b325f;
+  }
+  .featured-services__header {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .featured-services__eyebrow {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #37648c;
+    margin-bottom: 0.9rem;
+  }
+  .featured-services__header :is(h1, h2, h3) {
+    font-size: clamp(2rem, 3vw, 2.9rem);
+    line-height: 1.16;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+  }
+  .featured-services__header > p {
+    color: #53677d;
+    line-height: 1.7;
+    max-width: 24rem;
+  }
+  .featured-services__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .care-link {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    min-width: 0;
+    color: #1b325f;
+    text-decoration: none;
+    border: 1px solid #d7e2ed;
+    background: #fff;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+  }
+  .care-link:hover {
+    border-color: #3a89c9;
+    box-shadow: 0 8px 24px #1b325f0b;
+  }
+  .care-link__image {
+    position: relative;
+    aspect-ratio: 8 / 5;
+    overflow: hidden;
+  }
+  .care-link__image :global(img) {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+  .care-link:hover :global(img) {
+    transform: scale(1.025);
+  }
+  .care-link__body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .care-link__concern {
+    font-size: 0.7rem;
+    color: #53677d;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .care-link h3 {
+    font-weight: 500;
+    font-size: 1.4rem;
+    line-height: 1.25;
+  }
+  .care-link__end {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1.25rem;
+    margin-top: auto;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .care-link__end :global(svg) {
+    color: #37648c;
+  }
+  .featured-services__help {
+    display: flex;
+    gap: 0.5rem 1.5rem;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid #d7e2ed;
+  }
+  .featured-services__help p {
+    font-size: 0.95rem;
+    color: #53677d;
+  }
+  .featured-services__help a {
+    display: flex;
+    gap: 0.7rem;
+    align-items: center;
+    text-underline-offset: 0.25rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  @media (min-width: 38rem) {
+    .featured-services__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 65rem) {
+    .featured-services__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .featured-services__header {
+      grid-template-columns: 1.2fr 0.8fr;
+      align-items: end;
+      gap: 3rem;
+    }
+    .featured-services__header > p {
+      justify-self: end;
+    }
+  }
+</style>

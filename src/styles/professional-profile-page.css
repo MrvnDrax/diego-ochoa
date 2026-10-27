@@ -1,0 +1,144 @@
+.professional-profile-page__timeline,
+.professional-profile-page__experience-grid,
+.professional-profile-page__development,
+.professional-profile-page__development-group ul {
+  display: grid;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.professional-profile-page__timeline {
+  gap: var(--spacing-3);
+}
+
+.professional-profile-page__timeline-item,
+.professional-profile-page__experience-card,
+.professional-profile-page__development-group {
+  display: grid;
+  gap: var(--spacing-2);
+  padding: var(--spacing-5);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-background-canvas);
+}
+
+.professional-profile-page__timeline-item h3,
+.professional-profile-page__experience-card h3,
+.professional-profile-page__development-group h3,
+.professional-profile-page__timeline-item p,
+.professional-profile-page__experience-card p,
+.professional-profile-page__timeline-item span,
+.professional-profile-page__experience-card span {
+  margin: 0;
+}
+
+.professional-profile-page__timeline-period {
+  color: var(--color-text-brand);
+  font-size: var(--font-size-label);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-label);
+  letter-spacing: var(--letter-spacing-label);
+}
+
+.professional-profile-page__timeline-item h3,
+.professional-profile-page__experience-card h3,
+.professional-profile-page__development-group h3 {
+  color: var(--color-text-primary);
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-heading-4-mobile);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-heading-4-mobile);
+}
+
+.professional-profile-page__timeline-item p,
+.professional-profile-page__experience-card p {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-body-base);
+  line-height: var(--line-height-body-base);
+}
+
+.professional-profile-page__timeline-item span,
+.professional-profile-page__experience-card span {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-body-small);
+  line-height: var(--line-height-body-small);
+}
+
+.professional-profile-page__experience-grid {
+  gap: var(--spacing-3);
+}
+
+.professional-profile-page__experience-card ul {
+  display: grid;
+  padding-inline-start: var(--spacing-5);
+  gap: var(--spacing-1);
+  margin: var(--spacing-2) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-body-small);
+  line-height: var(--line-height-body-small);
+}
+
+.professional-profile-page__development {
+  gap: var(--spacing-3);
+}
+
+.professional-profile-page__development-group ul {
+  gap: var(--spacing-2);
+}
+
+.professional-profile-page__development-group li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-body-small);
+  line-height: var(--line-height-body-small);
+}
+
+.professional-profile-page__development-group li span:last-child {
+  flex: none;
+  color: var(--color-text-brand);
+  font-weight: var(--font-weight-semibold);
+}
+
+@media (min-width: 48rem) {
+  .professional-profile-page__timeline {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .professional-profile-page__experience-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .professional-profile-page__experience-card:first-child {
+    grid-column: span 2;
+  }
+
+  .professional-profile-page__development {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .professional-profile-page__development-group:last-child {
+    grid-column: span 2;
+  }
+}
+
+@media (min-width: 75rem) {
+  .professional-profile-page__experience-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .professional-profile-page__experience-card:first-child {
+    grid-column: auto;
+  }
+
+  .professional-profile-page__development {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .professional-profile-page__development-group:last-child {
+    grid-column: auto;
+  }
+}

@@ -1,0 +1,215 @@
+/*Design tokens del sitio.*/
+
+:root {
+  /* Familias tipográficas */
+
+  --font-family-heading: 'Source Serif 4 Variable', Georgia, serif;
+
+  --font-family-body: 'Source Sans 3 Variable', Arial, sans-serif;
+
+  --font-family-accent:
+    'Cormorant Garamond Variable', 'Cormorant Garamond', Georgia, serif;
+  /* Pesos tipográficos */
+
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Display */
+
+  --font-size-display-mobile: 2.5rem;
+  --line-height-display-mobile: 3rem;
+
+  --font-size-display-desktop: 3.5rem;
+  --line-height-display-desktop: 4rem;
+
+  /* Heading 1 */
+
+  --font-size-heading-1-mobile: 2.25rem;
+  --line-height-heading-1-mobile: 2.75rem;
+
+  --font-size-heading-1-desktop: 3rem;
+  --line-height-heading-1-desktop: 3.5rem;
+
+  /* Heading 2 */
+
+  --font-size-heading-2-mobile: 1.875rem;
+  --line-height-heading-2-mobile: 2.375rem;
+
+  --font-size-heading-2-desktop: 2.5rem;
+  --line-height-heading-2-desktop: 3rem;
+
+  /* Heading 3 */
+
+  --font-size-heading-3-mobile: 1.5rem;
+  --line-height-heading-3-mobile: 2rem;
+
+  --font-size-heading-3-desktop: 2rem;
+  --line-height-heading-3-desktop: 2.5rem;
+
+  /* Heading 4 */
+
+  --font-size-heading-4-mobile: 1.25rem;
+  --line-height-heading-4-mobile: 1.75rem;
+
+  --font-size-heading-4-desktop: 1.5rem;
+  --line-height-heading-4-desktop: 2rem;
+
+  /* Texto */
+
+  --font-size-body-large: 1.125rem;
+  --line-height-body-large: 1.75rem;
+
+  --font-size-body-base: 1rem;
+  --line-height-body-base: 1.5rem;
+
+  --font-size-body-small: 0.875rem;
+  --line-height-body-small: 1.25rem;
+
+  --font-size-label: 0.875rem;
+  --line-height-label: 1.25rem;
+  --letter-spacing-label: 0.1px;
+
+  --font-size-caption: 0.75rem;
+  --line-height-caption: 1rem;
+  --letter-spacing-caption: 0.2px;
+
+  --font-size-eyebrow: 0.8125rem;
+  --letter-spacing-eyebrow: 1px;
+
+  /* Colores primitivos utilizados actualmente */
+
+  --color-brand-clinical-200: #9cc4e4;
+  --color-brand-clinical-400: #3a89c9;
+  --color-brand-clinical-600: #53677d;
+  --color-brand-clinical-900: #53677d;
+  --color-brand-clinical-950: #1b325f;
+
+  --color-brand-navy-800: #1b325f;
+
+  --color-brand-warm-200: #e9f2f9;
+  --color-brand-warm-400: #3a89c9;
+
+  --color-logo-default: var(--color-brand-clinical-950);
+  --color-logo-accent: var(--color-brand-clinical-400);
+  --color-logo-inverse: var(--color-neutral-0);
+
+  --color-neutral-0: #ffffff;
+  --color-neutral-50: #e9f2f9;
+  --color-neutral-200: #9cc4e4;
+  --color-neutral-500: #807b75;
+
+  --color-feedback-success: #25d366;
+  --color-feedback-success-hover: #1da851;
+
+  /* Colores semánticos */
+
+  --color-action-primary: var(--color-brand-clinical-950);
+  --color-action-primary-hover: #284b77;
+
+  --color-action-secondary: #1b325f;
+  --color-action-secondary-hover: var(--color-brand-clinical-950);
+
+  /* Coral oscuro en botones para mantener legible el texto blanco. */
+  --color-action-whatsapp: #cd482b;
+  --color-text-on-coral: #ffffff;
+  --color-action-whatsapp-hover: #b83d24;
+  --color-action-disabled: var(--color-neutral-200);
+
+  --color-background-canvas: var(--color-neutral-0);
+  --color-background-subtle: var(--color-neutral-50);
+  --color-background-brand-subtle: var(--color-brand-clinical-200);
+  --color-background-strong: #1b325f;
+  --color-background-warm: var(--color-brand-warm-200);
+
+  --color-text-primary: var(--color-brand-clinical-950);
+  --color-text-secondary: var(--color-brand-clinical-600);
+  --color-text-brand: var(--color-brand-clinical-950);
+  --color-text-link: var(--color-brand-clinical-600);
+  --color-text-inverse: var(--color-neutral-0);
+  --color-text-disabled: var(--color-neutral-500);
+
+  --color-border-default: #d7e2ed;
+  --color-border-strong: var(--color-brand-clinical-600);
+  --color-border-focus: var(--color-brand-clinical-950);
+
+  /* Espaciado: escala base de 4px */
+
+  --spacing-0: 0;
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-7: 1.75rem;
+  --spacing-8: 2rem;
+  --spacing-10: 2.5rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+  --spacing-20: 5rem;
+  --spacing-24: 6rem;
+  --spacing-30: 7.5rem;
+
+  /* Forma */
+
+  --radius-none: 0;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Movimiento */
+
+  --motion-duration-fast: 150ms;
+  --motion-duration-standard: 250ms;
+  --motion-duration-slow: 400ms;
+
+  /* Sombras */
+
+  --shadow-subtle: 0 1px 2px rgb(21 23 26 / 8%);
+
+  --shadow-strong:
+    0 4px 8px -4px rgb(21 23 26 / 8%), 0 12px 32px -8px rgb(21 23 26 / 18%);
+
+  /* Retícula mobile */
+
+  --layout-content-max: 75rem;
+  --layout-gutter: var(--spacing-4);
+  --layout-column-gap: var(--spacing-3);
+  --layout-section-content-gap: var(--spacing-8);
+
+  /* Control de foco */
+
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 3px;
+
+  /*
+   * Alias temporales para no romper el CSS inicial.
+   * Podremos retirarlos cuando todos los componentes usen nombres semánticos.
+   */
+
+  --font-family-base: var(--font-family-body);
+  --color-canvas: var(--color-background-canvas);
+  --color-ink: var(--color-text-primary);
+  --color-rule: var(--color-border-default);
+}
+
+/* Retícula tablet */
+
+@media (min-width: 48rem) {
+  :root {
+    --layout-gutter: var(--spacing-8);
+    --layout-column-gap: var(--spacing-5);
+  }
+}
+
+/* Retícula desktop */
+
+@media (min-width: 75rem) {
+  :root {
+    --layout-gutter: var(--spacing-6);
+    --layout-column-gap: var(--spacing-6);
+  }
+}

@@ -1,0 +1,283 @@
+---
+import { getCollection, render } from 'astro:content';
+
+interface Props {
+  id?: string;
+}
+const { id = 'preguntas-frecuentes' }: Props = Astro.props;
+const categories = [
+  {
+    id: 'consulta',
+    label: 'Primer contacto',
+    description: 'Cómo iniciar y qué información compartir.',
+  },
+  {
+    id: 'lesiones',
+    label: 'Compra y terrenos',
+    description: 'Preguntas sobre inmuebles y documentos.',
+  },
+  {
+    id: 'cirugia',
+    label: 'Créditos y gestiones',
+    description: 'Opciones, requisitos y seguimiento.',
+  },
+] as const;
+const entries = (await getCollection('faqs')).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const rendered = await Promise.all(
+  entries.map(async (entry) => ({
+    entry,
+    Content: (await render(entry)).Content,
+  })),
+);
+const groups = categories.map((category) => ({
+  ...category,
+  questions: rendered.filter(
+    ({ entry }) => entry.data.category === category.id,
+  ),
+}));
+---
+
+<section id={id} class="faq-accordion" aria-label="Preguntas frecuentes">
+  <div class="container faq-accordion__layout">
+    <nav class="faq-accordion__navigation" aria-label="Temas de preguntas">
+      <p class="faq-accordion__eyebrow">Explora por tema</p>
+      {groups.map((group) => (
+        <a href={`#faq-${group.id}`}>
+          <span>{group.label}</span>
+        </a>
+      ))}
+    </nav>
+    <div class="faq-accordion__groups">
+      {groups.map((group) => (
+        <section
+          id={`faq-${group.id}`}
+          class="faq-accordion__group"
+          aria-labelledby={`faq-${group.id}-heading`}
+        >
+          <header>
+            <p class="faq-accordion__eyebrow">Preguntas frecuentes</p>
+            <h2 id={`faq-${group.id}-heading`}>{group.label}</h2>
+            <p class="faq-accordion__description">{group.description}</p>
+          </header>
+          <div class="faq-accordion__list">
+            {group.questions.map(({ entry, Content }) => (
+              <details data-faq-question>
+                <summary>
+                  <span>{entry.data.question}</span>
+                  <span class="faq-accordion__plus" aria-hidden="true"></span>
+                </summary>
+                <div class="faq-accordion__answer" data-details-answer>
+                  <Content />
+                </div>
+              </details>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  import { animateDetails } from '../../scripts/animated-details';
+  function initializeFaqAccordion() {
+    const root = document.querySelector<HTMLElement>('.faq-accordion');
+    if (!root) return;
+    const questions = Array.from(
+      root.querySelectorAll<HTMLDetailsElement>(
+        '[data-faq-question]:not([data-animated-details])',
+      ),
+    );
+    if (!questions.length) return;
+    const cleanups = questions.map(animateDetails);
+    const closeOthers = (event: Event) => {
+      questions.forEach((question) => {
+        if (question !== event.target && question.dataset.expanded === 'true') {
+          question.querySelector('summary')?.click();
+        }
+      });
+    };
+    root.addEventListener('details:opening', closeOthers);
+    document.addEventListener(
+      'astro:before-swap',
+      () => {
+        root.removeEventListener('details:opening', closeOthers);
+        cleanups.forEach((cleanup) => cleanup());
+      },
+      { once: true },
+    );
+  }
+  initializeFaqAccordion();
+  document.addEventListener('astro:page-load', initializeFaqAccordion);
+</script>
+
+<style>
+  .faq-accordion {
+    padding-block: clamp(2.5rem, 6vw, 6rem);
+    background: #f7fafc;
+    color: #1b325f;
+  }
+  .faq-accordion__layout {
+    display: grid;
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: start;
+  }
+  .faq-accordion__navigation {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .faq-accordion__eyebrow {
+    margin: 0 0 0.75rem;
+    color: #37648c;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+  .faq-accordion__navigation .faq-accordion__eyebrow {
+    width: 100%;
+  }
+  .faq-accordion__navigation a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid #cad8e6;
+    border-radius: var(--radius-full);
+    background: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.25;
+    text-decoration: none;
+    transition:
+      border-color 180ms ease-out,
+      background-color 180ms ease-out;
+  }
+  .faq-accordion__navigation a:hover,
+  .faq-accordion__navigation a:focus-visible {
+    border-color: #37648c;
+    background: #e9f2f9;
+  }
+  .faq-accordion__groups {
+    display: grid;
+    gap: clamp(3rem, 6vw, 5rem);
+    min-width: 0;
+  }
+  .faq-accordion__group {
+    scroll-margin-top: 6rem;
+  }
+  .faq-accordion__group header {
+    margin-bottom: 1.5rem;
+  }
+  h2 {
+    margin: 0;
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  .faq-accordion__description {
+    margin-top: 0.6rem;
+    color: #53677d;
+    line-height: 1.6;
+  }
+  .faq-accordion__list {
+    display: grid;
+    gap: 0.75rem;
+  }
+  details {
+    min-width: 0;
+    padding-inline: 1.25rem;
+    border: 1px solid #cad8e6;
+    border-radius: var(--radius-md);
+    background: #fff;
+    transition:
+      background-color 280ms ease-out,
+      border-color 280ms ease-out,
+      box-shadow 280ms ease-out;
+  }
+  details[data-expanded='true'],
+  details[open]:not([data-animated-details]) {
+    background: #e9f2f9;
+    border-color: #91bada;
+    box-shadow: 0 0.5rem 1.5rem rgb(27 50 95 / 8%);
+  }
+  summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 1.5rem;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem 0;
+    list-style: none;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq-accordion__plus {
+    position: relative;
+    display: block;
+    width: 1.5rem;
+    height: 1.5rem;
+    justify-self: end;
+    transition: transform 260ms ease-out;
+  }
+  .faq-accordion__plus::before,
+  .faq-accordion__plus::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.875rem;
+    height: 1.5px;
+    border-radius: var(--radius-full);
+    background: #37648c;
+    content: '';
+    transform: translate(-50%, -50%);
+  }
+  .faq-accordion__plus::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+  details[open]:not([data-animated-details]) .faq-accordion__plus,
+  details[data-expanded='true'] .faq-accordion__plus {
+    transform: rotate(45deg);
+  }
+  .faq-accordion__answer {
+    padding: 0 1rem 1.3rem 0;
+    color: #53677d;
+    line-height: 1.7;
+  }
+  .faq-accordion__answer :global(p + p) {
+    margin-top: 0.7rem;
+  }
+  .faq-accordion__answer :global(a) {
+    color: #285f91;
+    text-underline-offset: 0.2rem;
+  }
+  @media (min-width: 60rem) {
+    .faq-accordion__layout {
+      grid-template-columns: minmax(12rem, 0.32fr) minmax(0, 1fr);
+    }
+    .faq-accordion__navigation {
+      position: sticky;
+      top: 6.5rem;
+      display: grid;
+    }
+    .faq-accordion__navigation a {
+      justify-content: space-between;
+      border-radius: var(--radius-md);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    details,
+    .faq-accordion__navigation a,
+    .faq-accordion__plus {
+      transition: none;
+    }
+  }
+</style>

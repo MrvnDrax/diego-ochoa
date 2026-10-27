@@ -1,0 +1,14 @@
+---
+type ContainerElement = 'div' | 'main' | 'header' | 'footer' | 'nav' | 'aside';
+
+interface Props {
+  as?: ContainerElement;
+  class?: string;
+}
+
+const { as: Tag = 'div', class: className, ...rest }: Props = Astro.props;
+---
+
+<Tag class:list={['container', className]} {...rest}>
+  <slot />
+</Tag>

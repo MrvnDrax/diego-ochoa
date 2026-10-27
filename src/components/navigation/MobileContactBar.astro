@@ -1,0 +1,97 @@
+---
+import WhatsAppIcon from '@components/brand/WhatsAppIcon.astro';
+import Button from '@components/ui/Button.astro';
+import Icon from '@components/ui/Icon.astro';
+import { contact } from '@data/contact';
+import { generalWhatsAppHref } from '@data/whatsapp-messages';
+---
+
+<nav class="mobile-contact-bar" aria-label="Opciones rápidas de contacto">
+  <div class="mobile-contact-bar__action mobile-contact-bar__action--appointment">
+    <Button
+      href={generalWhatsAppHref}
+      variant="primary"
+      target="_blank"
+      rel="noopener noreferrer"
+      ariaLabel="Agendar cita por WhatsApp"
+    >
+      <WhatsAppIcon slot="icon-start" />
+      Agendar cita
+    </Button>
+  </div>
+  <div class="mobile-contact-bar__action mobile-contact-bar__action--phone">
+    <Button href={contact.phoneHref} variant="ghost">
+      <Icon slot="icon-start" name="phone" size="compact" />
+      Llamar
+    </Button>
+  </div>
+</nav>
+
+<style>
+  .mobile-contact-bar {
+    position: fixed;
+    z-index: 90;
+    top: calc(
+      var(--visual-viewport-bottom-y, 100dvh) -
+        var(--mobile-contact-height, 4.5rem)
+    );
+    right: 0;
+    bottom: auto;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    gap: 0.625rem;
+    padding: 0.625rem 0.75rem calc(0.625rem + env(safe-area-inset-bottom));
+    border-top: 1px solid #dce5ed;
+    background: #fff;
+    box-shadow: 0 -4px 24px rgb(27 50 95 / 5%);
+  }
+  .mobile-contact-bar__action {
+    min-width: 0;
+  }
+  .mobile-contact-bar__action--appointment {
+    flex: 1.6;
+    max-width: 28rem;
+  }
+  .mobile-contact-bar__action--phone {
+    flex: 1;
+    max-width: 16rem;
+  }
+  .mobile-contact-bar__action :global(.button) {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    height: 3.25rem;
+    padding-inline: 0.75rem;
+    border-radius: var(--radius-md);
+    white-space: nowrap;
+  }
+  .mobile-contact-bar__action--appointment :global(.button) {
+    color: var(--color-text-on-coral);
+    font-size: 0.9375rem;
+    font-weight: var(--font-weight-bold);
+    background: var(--color-action-whatsapp);
+  }
+  .mobile-contact-bar__action--appointment :global(.button:hover) {
+    background: var(--color-action-whatsapp-hover);
+  }
+  .mobile-contact-bar__action--phone :global(.button) {
+    color: #1b325f;
+    border: 1px solid #c7d4e2;
+    background: #fff;
+  }
+  .mobile-contact-bar__action--phone :global(.button:hover) {
+    background: #e9f2f9;
+  }
+  :global(body) {
+    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+  }
+  @media (min-width: 75rem) {
+    .mobile-contact-bar {
+      display: none;
+    }
+    :global(body) {
+      padding-bottom: 0;
+    }
+  }
+</style>

@@ -1,0 +1,99 @@
+---
+import '@styles/doctor-channels-section.css';
+
+import { Image } from 'astro:assets';
+
+import doctoraliaSymbol from '@assets/diego/diego-ochoa-portrait.png';
+
+import SocialIconLink from '@components/brand/SocialIconLink.astro';
+import ContentSection from '@components/patterns/ContentSection.astro';
+import { doctoraliaProfile } from '@data/booking';
+import {
+  socialLinks,
+  type SocialLink as SocialLinkData,
+} from '@data/social-links';
+
+interface Props {
+  id?: string;
+  eyebrow?: string;
+  heading?: string;
+  description?: string;
+  doctoraliaHref?: string;
+  links?: SocialLinkData[];
+  notice?: string;
+  class?: string;
+}
+
+const {
+  id = 'canales-y-redes',
+  eyebrow = 'Canales y redes',
+  heading = 'Conecta con Diego',
+  description = 'Conoce su enfoque de trabajo y conversemos sobre tu proyecto.',
+  doctoraliaHref = doctoraliaProfile.href,
+  links = socialLinks,
+  class: className,
+}: Props = Astro.props;
+---
+
+<ContentSection
+  id={id}
+  eyebrow={eyebrow}
+  heading={heading}
+  description={description}
+  tone="brand-subtle"
+  spacing="default"
+  shape="editorial"
+  class:list={['doctor-channels-section', className]}
+  contentClass="doctor-channels-section__content"
+>
+  <div class="doctor-channels-section__panel">
+    <a
+      class="doctor-channels-section__doctoralia"
+      href={doctoraliaHref}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Escribir a Diego Ochoa por WhatsApp"
+    >
+      <Image
+        class="doctor-channels-section__doctoralia-logo"
+        src={doctoraliaSymbol}
+        width="51"
+        height="48"
+        alt=""
+      />
+
+      <span class="doctor-channels-section__doctoralia-copy">
+        <span class="doctor-channels-section__doctoralia-eyebrow">
+          Perfil profesional
+        </span>
+
+        <span class="doctor-channels-section__doctoralia-title">
+          WhatsApp
+        </span>
+
+        <span class="doctor-channels-section__doctoralia-description">
+          Conversemos sobre tu gestión
+        </span>
+      </span>
+
+    </a>
+
+    {links.length > 0 && (
+      <div class="doctor-channels-section__channels">
+        <div class="doctor-channels-section__links-heading">
+          <span>Explora sus canales</span>
+          <span aria-hidden="true"></span>
+        </div>
+
+        <ul class="doctor-channels-section__links">
+          {links.map((link) => (
+            <li>
+              <SocialIconLink link={link} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+
+</ContentSection>

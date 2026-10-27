@@ -1,0 +1,251 @@
+---
+type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'ghost'
+  | 'inverse'
+  | 'whatsapp'
+  | 'whatsapp-outline';
+
+type NativeButtonType = 'button' | 'submit' | 'reset';
+
+type LinkTarget = '_self' | '_blank';
+
+interface Props {
+  href?: string;
+  variant?: ButtonVariant;
+  type?: NativeButtonType;
+  target?: LinkTarget;
+  rel?: string;
+  disabled?: boolean;
+  fullWidth?: boolean;
+  ariaLabel?: string;
+  class?: string;
+}
+
+const {
+  href,
+  variant = 'primary',
+  type = 'button',
+  target = '_self',
+  rel,
+  disabled = false,
+  fullWidth = false,
+  ariaLabel,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const hasStartIcon = Astro.slots.has('icon-start');
+
+const hasEndIcon = Astro.slots.has('icon-end');
+
+const safeRel = target === '_blank' ? (rel ?? 'noopener noreferrer') : rel;
+
+const accessibleLabel =
+  target === '_blank' && ariaLabel
+    ? `${ariaLabel} (se abre en una pestaña nueva)`
+    : ariaLabel;
+
+const classes = [
+  'button',
+  `button--${variant}`,
+  fullWidth && 'button--full-width',
+  className,
+];
+---
+
+{href ? (
+  <a
+    {...rest}
+    href={disabled ? undefined : href}
+    target={target}
+    rel={safeRel}
+    aria-label={accessibleLabel}
+    aria-disabled={disabled ? 'true' : undefined}
+    tabindex={disabled ? -1 : undefined}
+    class:list={classes}
+  >
+    {hasStartIcon && (
+      <span class="button__icon" aria-hidden="true">
+        <slot name="icon-start" />
+      </span>
+    )}
+
+    <span class="button__label">
+      <slot />
+      {target === '_blank' && (
+        <span class="button__external-note">
+          {' '}
+          (se abre en una pestaña nueva)
+        </span>
+      )}
+    </span>
+
+    {hasEndIcon && (
+      <span class="button__icon" aria-hidden="true">
+        <slot name="icon-end" />
+      </span>
+    )}
+  </a>
+) : (
+  <button
+    {...rest}
+    type={type}
+    disabled={disabled}
+    aria-label={accessibleLabel}
+    class:list={classes}
+  >
+    {hasStartIcon && (
+      <span class="button__icon" aria-hidden="true">
+        <slot name="icon-start" />
+      </span>
+    )}
+
+    <span class="button__label">
+      <slot />
+    </span>
+
+    {hasEndIcon && (
+      <span class="button__icon" aria-hidden="true">
+        <slot name="icon-end" />
+      </span>
+    )}
+  </button>
+)}
+
+<style>
+  .button {
+    display: inline-flex;
+    min-width: 15.75rem;
+    min-height: 3rem;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-3) var(--spacing-5);
+    border: 0;
+    border-radius: var(--radius-md);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-label);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-label);
+    letter-spacing: var(--letter-spacing-label);
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      color var(--motion-duration-fast),
+      background-color var(--motion-duration-fast);
+  }
+
+  .button--full-width {
+    width: 100%;
+  }
+
+  .button--primary {
+    color: var(--color-text-inverse);
+    background-color: var(--color-action-primary);
+  }
+
+  .button--primary:hover {
+    background-color: var(--color-action-primary-hover);
+  }
+
+  .button--secondary {
+    color: var(--color-text-inverse);
+    background-color: var(--color-action-secondary);
+  }
+
+  .button--secondary:hover {
+    background-color: var(--color-action-secondary-hover);
+  }
+
+  .button--ghost {
+    color: var(--color-text-brand);
+    background-color: transparent;
+  }
+
+  .button--ghost:hover {
+    color: var(--color-text-link);
+  }
+
+  .button--inverse {
+    color: var(--color-text-brand);
+    background-color: var(--color-background-canvas);
+  }
+
+  .button--inverse:hover {
+    color: var(--color-text-link);
+    background-color: var(--color-background-subtle);
+  }
+
+  .button--whatsapp {
+    color: var(--color-text-on-coral);
+    font-size: 0.9375rem;
+    font-weight: var(--font-weight-bold);
+    background-color: var(--color-action-whatsapp);
+  }
+
+  .button--whatsapp:hover,
+  .button--whatsapp:focus-visible {
+    color: var(--color-text-on-coral);
+    background-color: var(--color-action-whatsapp-hover);
+  }
+
+  .button--whatsapp-outline {
+    color: var(--color-text-link);
+    background-color: var(--color-background-canvas);
+  }
+
+  .button--whatsapp-outline:hover,
+  .button--whatsapp-outline:focus-visible {
+    color: var(--color-text-on-coral);
+    background-color: var(--color-action-whatsapp);
+  }
+
+  .button:disabled,
+  .button[aria-disabled='true'] {
+    color: var(--color-text-disabled);
+    background-color: var(--color-action-disabled);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .button__label {
+    display: block;
+  }
+
+  .button__external-note {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    border: 0;
+    margin: -1px;
+    white-space: nowrap;
+  }
+
+  .button__icon {
+    display: grid;
+    width: 1.5rem;
+    height: 1.5rem;
+    flex: none;
+    place-items: center;
+  }
+
+  .button__icon :global(img),
+  .button__icon :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (max-width: 23rem) {
+    .button {
+      width: 100%;
+      min-width: 0;
+    }
+  }
+</style>

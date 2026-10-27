@@ -1,0 +1,48 @@
+---
+import { getEntry } from 'astro:content';
+
+import PrivacyPage from '@components/patterns/PrivacyPage.astro';
+import ContactPage from '@components/patterns/ContactPage.astro';
+import FaqPage from '@components/patterns/FaqPage.astro';
+import LocationsPage from '@components/patterns/LocationsPage.astro';
+import ProfessionalProfilePage from '@components/patterns/ProfessionalProfilePage.astro';
+import ServicesPage from '@components/patterns/ServicesPage.astro';
+
+export function getStaticPaths() {
+  return [
+    {
+      params: { slug: 'diego-ochoa' },
+      props: { pageId: 'doctor' },
+    },
+    { params: { slug: 'servicios' }, props: { pageId: 'services' } },
+    { params: { slug: 'ubicaciones' }, props: { pageId: 'locations' } },
+    { params: { slug: 'preguntas-frecuentes' }, props: { pageId: 'faq' } },
+    { params: { slug: 'contacto' }, props: { pageId: 'contact' } },
+    { params: { slug: 'aviso-de-privacidad' }, props: { pageId: 'privacy' } },
+  ];
+}
+
+type PageId =
+  'doctor' | 'services' | 'locations' | 'faq' | 'contact' | 'privacy';
+
+const { pageId } = Astro.props as { pageId: PageId };
+const page = await getEntry('pages', pageId);
+
+if (!page) {
+  throw new Error();
+}
+---
+
+{pageId === 'doctor' ? (
+  <ProfessionalProfilePage page={page} />
+) : pageId === 'services' ? (
+  <ServicesPage page={page} />
+) : pageId === 'locations' ? (
+  <LocationsPage page={page} />
+) : pageId === 'faq' ? (
+  <FaqPage page={page} />
+) : pageId === 'contact' ? (
+  <ContactPage page={page} />
+) : (
+  <PrivacyPage page={page} />
+)}

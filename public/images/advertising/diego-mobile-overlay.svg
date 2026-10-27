@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2172" height="724" viewBox="0 0 2172 724" role="img" aria-label="Diego Ochoa. Tu próximo inmueble, con más claridad. Escríbeme.">
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M95 208V112l79-54 79 54v96" stroke="#1b325f" stroke-width="12"/>
+  <path d="M143 208v-68h62v68" stroke="#f26c4f" stroke-width="12"/>
+</g>
+<text x="290" y="184" fill="#1b325f" font-family="Arial, sans-serif" font-size="91" font-weight="700">Diego Ochoa</text>
+<path d="M98 236h590" stroke="#f26c4f" stroke-width="10" stroke-linecap="round"/>
+<text x="95" y="366" fill="#1b325f" font-family="Arial, sans-serif" font-size="93" font-weight="700">Tu próximo inmueble,</text>
+<text x="95" y="467" fill="#e35d42" font-family="Arial, sans-serif" font-size="88" font-weight="700">con más claridad.</text>
+<rect x="95" y="523" width="605" height="133" rx="66" fill="#d4472c"/>
+<text x="202" y="610" fill="#fff" font-family="Arial, sans-serif" font-size="67" font-weight="700">Escríbeme</text>
+<path d="M607 589h39m-15-16 16 16-16 16" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

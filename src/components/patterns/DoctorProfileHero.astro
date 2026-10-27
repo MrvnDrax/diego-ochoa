@@ -1,0 +1,226 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+import retratoDrAaron from '@assets/diego/diego-ochoa-portrait.png';
+import { doctor } from '@data/doctor';
+
+import Button from '@components/ui/Button.astro';
+import Container from '@components/ui/Container.astro';
+import Eyebrow from '@components/ui/Eyebrow.astro';
+import Icon from '@components/ui/Icon.astro';
+import Section from '@components/ui/Section.astro';
+import { doctoraliaProfile } from '@data/booking';
+import { generalWhatsAppHref } from '@data/whatsapp-messages';
+
+interface Props {
+  id?: string;
+  eyebrow?: string;
+  heading?: string;
+  description?: string;
+  doctoraliaHref?: string;
+  image?: ImageMetadata;
+  imageAlt?: string;
+  class?: string;
+}
+
+const {
+  id = 'perfil-profesional',
+  eyebrow = 'Gestiones inmobiliarias',
+  heading = doctor.fullName,
+  description = 'Orientación para entender una operación inmobiliaria, organizar tus documentos y conocer el siguiente paso que corresponde a tu situación.',
+  doctoraliaHref = doctoraliaProfile.href,
+  image = retratoDrAaron,
+  imageAlt = 'Retrato de Diego Ochoa',
+  class: className,
+}: Props = Astro.props;
+---
+
+<Section
+  id={id}
+  tone="warm"
+  spacing="none"
+  class:list={['doctor-profile-hero', className]}
+>
+  <Container class="doctor-profile-hero__container">
+    <div class="doctor-profile-hero__content">
+      <Eyebrow>{eyebrow}</Eyebrow>
+
+      <h1 class="doctor-profile-hero__heading">{heading}</h1>
+
+      <p class="doctor-profile-hero__description">{description}</p>
+
+      <div class="doctor-profile-hero__action">
+        <Button href={generalWhatsAppHref} target="_blank" variant="whatsapp">
+          Consultar mi caso
+        </Button>
+        <Button
+          href={doctoraliaHref}
+          target="_blank"
+          variant="secondary"
+          ariaLabel="Escribir a Diego Ochoa por WhatsApp"
+        >
+          Escribir por WhatsApp
+          <Icon slot="icon-end" name="move-right" size="small" />
+        </Button>
+      </div>
+    </div>
+
+    <div class="doctor-profile-hero__media">
+      <Image
+        class="doctor-profile-hero__image"
+        src={image}
+        alt={imageAlt}
+        loading="eager"
+      />
+    </div>
+  </Container>
+</Section>
+
+<style>
+  :global(.doctor-profile-hero) {
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+  }
+
+  .doctor-profile-hero__container {
+    display: grid;
+    gap: var(--spacing-6);
+    padding-block: var(--spacing-8);
+  }
+
+  .doctor-profile-hero__content {
+    display: grid;
+    align-content: center;
+    justify-items: start;
+    gap: var(--spacing-4);
+  }
+
+  .doctor-profile-hero__heading,
+  .doctor-profile-hero__description {
+    margin: 0;
+  }
+
+  .doctor-profile-hero__heading {
+    color: var(--color-text-primary);
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-heading-1-mobile);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-heading-1-mobile);
+  }
+
+  .doctor-profile-hero__description {
+    max-width: 36rem;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-base);
+    line-height: var(--line-height-body-base);
+  }
+
+  .doctor-profile-hero__action {
+    width: 100%;
+  }
+
+  .doctor-profile-hero__action :global(.button) {
+    width: 100%;
+  }
+
+  .doctor-profile-hero__media {
+    position: relative;
+    height: clamp(21rem, 45vw, 35rem);
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+    background-color: rgb(203 153 144 / 32%);
+  }
+
+  .doctor-profile-hero__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  @media (min-width: 48rem) {
+    :global(.doctor-profile-hero) {
+      border-radius: var(--radius-xl);
+    }
+
+    .doctor-profile-hero__container {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: center;
+      gap: var(--spacing-8);
+      padding-block: var(--spacing-12);
+    }
+
+    .doctor-profile-hero__action {
+      width: auto;
+    }
+
+    .doctor-profile-hero__action :global(.button) {
+      width: auto;
+    }
+
+    .doctor-profile-hero__media {
+    }
+  }
+
+  @media (min-width: 75rem) {
+    :global(.doctor-profile-hero) {
+      border-radius: var(--radius-xl);
+    }
+
+    .doctor-profile-hero__container {
+      grid-template-columns: 1.05fr 0.95fr;
+      justify-content: space-between;
+      gap: var(--spacing-16);
+      padding-block: var(--spacing-16);
+    }
+
+    .doctor-profile-hero__content {
+      gap: var(--spacing-5);
+    }
+
+    .doctor-profile-hero__heading {
+      font-size: 3rem;
+      line-height: 3.75rem;
+    }
+
+    .doctor-profile-hero__description {
+      font-size: var(--font-size-body-large);
+      line-height: var(--line-height-body-large);
+    }
+
+    .doctor-profile-hero__action :global(.button) {
+      width: 22.5rem;
+    }
+
+    .doctor-profile-hero__media {
+      width: 100%;
+    }
+  }
+
+  .doctor-profile-hero__heading {
+    font-weight: 500;
+    letter-spacing: -0.03em;
+  }
+  .doctor-profile-hero__action {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .doctor-profile-hero__action :global(.button) {
+    width: auto;
+  }
+  .doctor-profile-hero__media {
+    max-height: 600px;
+  }
+  .doctor-profile-hero__image {
+    object-position: center 25%;
+  }
+  @media (min-width: 48rem) {
+    .doctor-profile-hero__media {
+      grid-column: 2;
+    }
+  }
+</style>

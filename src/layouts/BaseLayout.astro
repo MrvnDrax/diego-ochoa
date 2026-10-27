@@ -1,0 +1,379 @@
+---
+import '@fontsource-variable/source-serif-4/wght.css';
+import '@fontsource-variable/source-serif-4/wght-italic.css';
+import '@fontsource-variable/source-sans-3/wght.css';
+
+import ConsentBanner from '@components/privacy/ConsentBanner.astro';
+import SiteLoader from '@components/ui/SiteLoader.astro';
+import { analyticsEventNames, analyticsEvents } from '@data/analytics';
+import { seo } from '@data/seo';
+import { site } from '@data/site';
+import {
+  createPageStructuredData,
+  type BreadcrumbItem,
+  type StructuredDataNode,
+} from '@data/structured-data';
+
+import '@styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+  canonicalPath?: string;
+  pageType?: string | string[];
+  breadcrumbs?: BreadcrumbItem[];
+  mainEntity?: StructuredDataNode | StructuredDataNode[];
+  structuredData?: StructuredDataNode[];
+}
+
+const {
+  title = seo.defaultTitle,
+  description = seo.defaultDescription,
+  noindex = false,
+  canonicalPath = Astro.url.pathname,
+  pageType = 'WebPage',
+  breadcrumbs = [],
+  mainEntity,
+  structuredData = [],
+}: Props = Astro.props;
+
+const canonicalUrl = new URL(canonicalPath, Astro.site ?? site.url).href;
+const socialImageUrl = new URL(
+  site.defaultSocialImagePath,
+  Astro.site ?? site.url,
+).href;
+const robotsContent = noindex || site.url.endsWith('.example')
+  ? 'noindex, follow'
+  : 'index, follow, max-image-preview:large';
+const googleAdsConversionId = import.meta.env.PUBLIC_GOOGLE_ADS_CONVERSION_ID;
+const googleTagIds = [
+  import.meta.env.PUBLIC_GOOGLE_TAG_ID,
+  googleAdsConversionId,
+].filter((id): id is string => Boolean(id));
+const uniqueGoogleTagIds = [...new Set(googleTagIds)];
+const googleConsentStorageKey = 'diegoochoa_google_consent_v1';
+const googleAdsConversionLabels = {
+  [analyticsEvents.whatsapp]: import.meta.env
+    .PUBLIC_GOOGLE_ADS_WHATSAPP_CONVERSION_LABEL,
+  [analyticsEvents.phone]: import.meta.env
+    .PUBLIC_GOOGLE_ADS_PHONE_CONVERSION_LABEL,
+  [analyticsEvents.form]: import.meta.env
+    .PUBLIC_GOOGLE_ADS_FORM_CONVERSION_LABEL,
+};
+const structuredDataJson = JSON.stringify(
+  createPageStructuredData({
+    title,
+    description,
+    canonicalUrl,
+    pageType,
+    breadcrumbs,
+    mainEntity,
+    additionalNodes: structuredData,
+  }),
+).replace(/</g, '\\u003c');
+---
+
+<!doctype html>
+<html lang={site.htmlLang} data-site-loading>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        const started = performance.now();
+        let finished = false;
+        const reducedMotion = window.matchMedia(
+          '(prefers-reduced-motion: reduce)',
+        );
+
+        const reveal = () => {
+          if (finished) return;
+          finished = true;
+          window.clearTimeout(watchdog);
+          const loader = document.querySelector('[data-site-loader]');
+          root.removeAttribute('data-site-loading');
+          loader?.classList.add('site-loader--leaving');
+          window.setTimeout(
+            () => {
+              loader?.remove();
+              root.dataset.siteReady = 'true';
+              document.dispatchEvent(new Event('site:ready'));
+            },
+            reducedMotion.matches ? 0 : 260,
+          );
+        };
+
+        // The watchdog keeps a failed image, font or embedded resource from
+        // holding the site behind the loader indefinitely.
+        const watchdog = window.setTimeout(reveal, 6000);
+        const waitForVisibleContent = async () => {
+          const visibleImages = Array.from(
+            document.querySelectorAll('main img'),
+          ).filter(
+            (image) =>
+              image.loading !== 'lazy' &&
+              image.getBoundingClientRect().top < window.innerHeight * 1.25,
+          );
+          await Promise.race([
+            Promise.all([
+              document.fonts?.ready ?? Promise.resolve(),
+              ...visibleImages.map((image) => image.decode?.().catch(() => {})),
+            ]),
+            new Promise((resolve) => window.setTimeout(resolve, 2500)),
+          ]);
+          window.setTimeout(
+            reveal,
+            Math.max(0, 650 - (performance.now() - started)),
+          );
+        };
+
+        if (document.readyState === 'complete') {
+          void waitForVisibleContent();
+        } else {
+          window.addEventListener('load', waitForVisibleContent, {
+            once: true,
+          });
+        }
+      })();
+    </script>
+    <noscript>
+      <style>
+        html[data-site-loading] {
+          overflow: auto;
+        }
+        html[data-site-loading] body > :not(.site-loader) {
+          visibility: visible;
+        }
+        .site-loader {
+          display: none;
+        }
+      </style>
+    </noscript>
+    <meta name="description" content={description} />
+    <meta name="robots" content={robotsContent} />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#151101" />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <meta property="og:locale" content={seo.openGraphLocale} />
+    <meta property="og:site_name" content={site.brandName} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:secure_url" content={socialImageUrl} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1672" />
+    <meta property="og:image:height" content="941" />
+    <meta
+      property="og:image:alt"
+      content="Diego Ochoa, gestiones inmobiliarias"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageUrl} />
+    <meta
+      name="twitter:image:alt"
+      content="Diego Ochoa, gestiones inmobiliarias"
+    />
+    {uniqueGoogleTagIds.length > 0 && <script
+      is:inline
+      define:vars={{
+        googleTagIds: uniqueGoogleTagIds,
+        googleAdsConversionId,
+        googleAdsConversionLabels,
+        analyticsEventNames,
+        googleConsentStorageKey,
+      }}
+    >
+      (() => {
+        window.dataLayer = window.dataLayer || [];
+        window.gtag =
+          window.gtag ||
+          function () {
+            window.dataLayer.push(arguments);
+          };
+
+        const consentValues = (granted) => ({
+          ad_storage: granted ? 'granted' : 'denied',
+          analytics_storage: granted ? 'granted' : 'denied',
+          ad_user_data: granted ? 'granted' : 'denied',
+          ad_personalization: granted ? 'granted' : 'denied',
+        });
+
+        window.gtag('consent', 'default', {
+          ...consentValues(false),
+          wait_for_update: 500,
+        });
+        window.gtag('set', 'ads_data_redaction', true);
+
+        let measurementAllowed = false;
+        let googleTagConfigured = false;
+
+        const updateConsent = (state) => {
+          measurementAllowed = state === 'granted';
+          window.gtag('consent', 'update', consentValues(measurementAllowed));
+        };
+
+        const loadGoogleTagScript = () => {
+          if (document.querySelector('[data-google-tag-loader]')) {
+            return;
+          }
+
+          const script = document.createElement('script');
+          script.async = true;
+          script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(googleTagIds[0])}`;
+          script.dataset.googleTagLoader = 'true';
+          document.head.append(script);
+        };
+
+        // Load the Google library once so that consent updates are handled
+        // reliably. The default consent state above keeps measurement denied
+        // until the visitor explicitly accepts it.
+        loadGoogleTagScript();
+
+        const configureGoogleTag = () => {
+          if (googleTagConfigured || !measurementAllowed) {
+            return;
+          }
+
+          googleTagConfigured = true;
+
+          window.gtag('js', new Date());
+          googleTagIds.forEach((tagId) => window.gtag('config', tagId));
+        };
+
+        try {
+          if (localStorage.getItem(googleConsentStorageKey) === 'granted') {
+            updateConsent('granted');
+            configureGoogleTag();
+          }
+        } catch {
+          // Storage can be unavailable in private browsing; consent stays denied.
+        }
+
+        const knownEventNames = new Set(analyticsEventNames);
+
+        const trackEvent = (detail) => {
+          if (
+            !measurementAllowed ||
+            !detail ||
+            !knownEventNames.has(detail.name)
+          ) {
+            return;
+          }
+
+          const parameters = {
+            ...(detail.parameters || {}),
+            event_source: 'website',
+            page_path: window.location.pathname,
+          };
+
+          window.gtag('event', detail.name, parameters);
+
+          const conversionLabel = googleAdsConversionLabels[detail.name];
+
+          if (googleAdsConversionId && conversionLabel) {
+            window.gtag('event', 'conversion', {
+              send_to: `${googleAdsConversionId}/${conversionLabel}`,
+            });
+          }
+        };
+
+        window.addEventListener('site:analytics', (event) => {
+          trackEvent(event.detail);
+        });
+
+        const promotionEventNames = {
+          'admodule:click': 'promotion_click',
+          'admodule:open': 'promotion_open',
+          'admodule:dismiss': 'promotion_dismiss',
+          'adbanner:click': 'promotion_click',
+          'adbanner:dismiss': 'promotion_dismiss',
+        };
+        Object.entries(promotionEventNames).forEach(([sourceName, name]) => {
+          document.addEventListener(sourceName, (event) => {
+            const detail = event.detail || {};
+            if (!detail.id) return;
+            trackEvent({
+              name,
+              parameters: {
+                promotion_id: String(detail.id),
+                placement: String(
+                  detail.placement || detail.format || 'banner',
+                ),
+              },
+            });
+          });
+        });
+
+        window.addEventListener('site:consent', (event) => {
+          const state = event.detail?.state;
+
+          if (state !== 'granted' && state !== 'denied') {
+            return;
+          }
+
+          updateConsent(state);
+          configureGoogleTag();
+        });
+
+        document.addEventListener('click', (event) => {
+          const target = event.target;
+
+          if (!(target instanceof Element)) {
+            return;
+          }
+
+          const link = target.closest('a[href]');
+
+          if (!(link instanceof HTMLAnchorElement)) {
+            return;
+          }
+
+          const url = new URL(link.href, window.location.href);
+          let name;
+
+          if (url.protocol === 'tel:') {
+            name = 'click_phone';
+          } else if (url.hostname === 'wa.me') {
+            name = 'click_whatsapp';
+          } else if (url.hostname.endsWith('doctoralia.com.mx')) {
+            name = 'click_doctoralia';
+          } else if (
+            url.hostname === 'maps.app.goo.gl' ||
+            url.hostname === 'www.google.com'
+          ) {
+            name = 'click_location';
+          }
+
+          if (name) {
+            trackEvent({ name });
+          }
+        });
+      })();
+    </script>}
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={structuredDataJson}
+    ></script>
+    <title>{title}</title>
+  </head>
+
+  <body>
+    <SiteLoader />
+    <slot />
+
+    <ConsentBanner
+      enabled={uniqueGoogleTagIds.length > 0}
+      storageKey={googleConsentStorageKey}
+    />
+  </body>
+</html>

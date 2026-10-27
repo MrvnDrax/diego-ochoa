@@ -1,0 +1,130 @@
+@import './tokens.css';
+@import '@fontsource-variable/cormorant-garamond';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
+  font-family: var(--font-family-body);
+  background-color: var(--color-background-strong);
+  touch-action: manipulation;
+  scroll-behavior: smooth;
+  --sticky-header-offset: 5.25rem;
+}
+
+body {
+  min-width: 20rem;
+  min-height: 100vh;
+  margin: 0;
+  font-size: var(--font-size-body-base);
+  line-height: var(--line-height-body-base);
+  background-color: var(--color-background-strong);
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin-block: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-family-heading);
+}
+
+h4 {
+  font-family: var(--font-family-body);
+}
+
+img,
+picture,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* HTML image dimensions reserve space; CSS controls the displayed height. */
+img {
+  height: auto;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+}
+
+/* External destinations stay visually identifiable, including button links. */
+a[target='_blank'] {
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
+  text-decoration-thickness: 1px;
+}
+
+:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-border-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.container {
+  width: min(
+    calc(100% - (2 * var(--layout-gutter))),
+    var(--layout-content-max)
+  );
+  margin-inline: auto;
+}
+
+.site-main > .section {
+  border-radius: var(--radius-xl);
+}
+.site-main {
+  background: #fff;
+}
+main [id] {
+  scroll-margin-top: var(--sticky-header-offset);
+}
+
+@media (min-width: 75rem) {
+  html {
+    --sticky-header-offset: 7rem;
+  }
+}
+html {
+  scrollbar-color: #9cc4e4 #f7fafc;
+}
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+summary {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

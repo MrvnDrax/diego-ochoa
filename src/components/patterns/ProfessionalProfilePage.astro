@@ -1,0 +1,247 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+import { Image } from 'astro:assets';
+
+import certificacionCmotImage from '@assets/diego/property-and-land.png';
+import enfoqueAtencionImage from '@assets/diego/property-consultation.png';
+import formacionAcademicaImage from '@assets/diego/diego-ochoa-presentation.png';
+import practicaClinicaImage from '@assets/diego/home-interior.png';
+import WhatsAppIcon from '@components/brand/WhatsAppIcon.astro';
+import Button from '@components/ui/Button.astro';
+import { generalWhatsAppHref } from '@data/whatsapp-messages';
+import DoctorProfileHero from '@components/patterns/DoctorProfileHero.astro';
+import PatientCareSection from '@components/patterns/PatientCareSection.astro';
+import ProfessionalCredentials from '@components/patterns/ProfessionalCredentials.astro';
+import ContentSection from '@components/patterns/ContentSection.astro';
+import { doctorEntityId } from '@data/structured-data';
+import SiteLayout from '@layouts/SiteLayout.astro';
+
+interface Props {
+  page: CollectionEntry<'pages'>;
+}
+
+const { page }: Props = Astro.props;
+---
+
+<SiteLayout
+  title={page.data.title}
+  description={page.data.description}
+  noindex={page.data.noindex}
+  pageType="ProfilePage"
+  mainEntity={{ '@id': doctorEntityId }}
+>
+  <DoctorProfileHero
+    eyebrow={page.data.eyebrow}
+    heading={page.data.heading}
+    description={page.data.intro}
+  />
+
+  <ProfessionalCredentials
+    eyebrow="Enfoque de trabajo"
+    heading="Acompañamiento inmobiliario"
+  />
+
+  <ContentSection
+    id="formacion-academica"
+    eyebrow="Trayectoria"
+    heading="Un proceso con claridad"
+    description="Diego Ochoa atiende consultas de bienes raíces en Tabasco, Chiapas y Veracruz, con base en Villahermosa. Antes de iniciar una gestión, revisa el objetivo, los documentos disponibles y las condiciones que deben confirmarse."
+    tone="canvas"
+    spacing="default"
+    shape="editorial-reverse"
+    layout="stack"
+    class="professional-profile-page__editorial professional-profile-page__editorial--formation"
+  >
+    <Image
+      class="professional-profile-page__image professional-profile-page__image--contain"
+      src={formacionAcademicaImage}
+      alt="Retrato de Diego Ochoa"
+      loading="lazy"
+    />
+  </ContentSection>
+
+  <ContentSection
+    id="practica-clinica"
+    eyebrow="Gestión inmobiliaria"
+    heading="Opciones para avanzar en tu proyecto"
+    description="Una gestión puede implicar revisión documental, consulta de requisitos, contacto con instituciones y seguimiento. Los pasos concretos dependen del inmueble, el tipo de crédito y tu situación."
+    tone="subtle"
+    spacing="default"
+    shape="editorial"
+    layout="stack"
+    class="professional-profile-page__editorial professional-profile-page__editorial--image-first"
+  >
+    <Image
+      class="professional-profile-page__image"
+      src={practicaClinicaImage}
+      alt="Interior de vivienda"
+      loading="lazy"
+    />
+  </ContentSection>
+
+  <ContentSection
+    id="certificacion-profesional"
+    eyebrow="Documentación"
+    heading="Revisar antes de comprometerte"
+    description="Antes de firmar o entregar dinero, conviene entender qué información se tiene del inmueble, quién participa en la operación y qué requisitos exige cada institución. La revisión inicial ayuda a ordenar preguntas y pendientes."
+    tone="strong"
+    spacing="default"
+    shape="editorial-reverse"
+    layout="stack"
+    class="professional-profile-page__editorial professional-profile-page__editorial--certification"
+  >
+    <Image
+      class="professional-profile-page__image professional-profile-page__image--certificate"
+      src={certificacionCmotImage}
+      alt="Vivienda y terreno"
+      loading="lazy"
+    />
+  </ContentSection>
+
+  <PatientCareSection
+    image={enfoqueAtencionImage}
+    imageAlt="Asesoría sobre documentos inmobiliarios"
+  />
+
+  <ContentSection
+    id="agenda-valoracion"
+    heading="Conversemos sobre tu caso"
+    description="Escríbenos desde Tabasco, Chiapas o Veracruz para confirmar cómo podemos orientar tu gestión."
+    tone="strong"
+    spacing="default"
+    shape="editorial-reverse"
+    layout="compact"
+    align="center"
+    eyebrowAlign="center"
+    class="professional-profile-page__cta"
+  >
+    <Button
+      href={generalWhatsAppHref}
+      target="_blank"
+      variant="whatsapp"
+      ariaLabel="Consultar una gestión por WhatsApp"
+    >
+      <WhatsAppIcon slot="icon-start" />
+      Escribir por WhatsApp
+    </Button>
+  </ContentSection>
+</SiteLayout>
+
+<style>
+  :global(.professional-profile-page__editorial .content-section__content) {
+    display: grid;
+  }
+
+  .professional-profile-page__image {
+    width: 100%;
+    height: clamp(18rem, 40vw, 28rem);
+    border-radius: var(--radius-xl);
+    object-fit: cover;
+  }
+
+  .professional-profile-page__image--contain {
+    object-fit: contain;
+    background-color: var(--color-background-canvas);
+    padding: var(--spacing-4);
+  }
+
+  .professional-profile-page__image--certificate {
+    min-height: 14rem;
+    object-fit: contain;
+    background-color: var(--color-background-canvas);
+    padding: var(--spacing-4);
+  }
+
+  :global(.professional-profile-page__cta .content-section__content) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-5);
+  }
+
+  .professional-profile-page__cta :global(.button) {
+    width: min(100%, 22.5rem);
+  }
+
+  @media (max-width: 47.9375rem) {
+    :global(
+      #practica-clinica .content-section__header,
+      #certificacion-profesional .content-section__header
+    ) {
+      display: contents;
+    }
+    :global(#practica-clinica .eyebrow, #certificacion-profesional .eyebrow) {
+      order: 1;
+    }
+    :global(#practica-clinica .content-section__content) {
+      order: 2;
+    }
+    :global(#practica-clinica .section-header__heading) {
+      order: 3;
+    }
+    :global(#practica-clinica .section-header__description) {
+      order: 4;
+    }
+    :global(#certificacion-profesional .section-header__heading) {
+      order: 2;
+    }
+    :global(#certificacion-profesional .content-section__content) {
+      order: 3;
+    }
+    :global(#certificacion-profesional .section-header__description) {
+      order: 4;
+    }
+  }
+  @media (min-width: 48rem) {
+    :global(.professional-profile-page__editorial .content-section__container) {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: center;
+      gap: var(--spacing-16);
+    }
+    :global(.professional-profile-page__editorial .content-section__header) {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    :global(.professional-profile-page__editorial .content-section__content) {
+      grid-column: 2;
+      grid-row: 1;
+    }
+    :global(.professional-profile-page__editorial .content-section__content) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    :global(
+      .professional-profile-page__editorial--image-first
+        .content-section__header
+    ) {
+      grid-column: 2;
+    }
+
+    :global(
+      .professional-profile-page__editorial--image-first
+        .content-section__content
+    ) {
+      grid-column: 1;
+    }
+
+    .professional-profile-page__image--contain {
+      padding: var(--spacing-6);
+    }
+
+    .professional-profile-page__image--certificate {
+      min-height: 15.75rem;
+    }
+  }
+
+  @media (min-width: 75rem) {
+    :global(.professional-profile-page__editorial .content-section__container) {
+      grid-template-columns: minmax(0, 591fr) minmax(0, 545fr);
+      gap: var(--spacing-16);
+    }
+
+    .professional-profile-page__image--certificate {
+      min-height: 15.75rem;
+    }
+  }
+</style>

@@ -1,0 +1,278 @@
+---
+import { contact } from '@data/contact';
+import { locations } from '@data/locations';
+---
+
+<form
+  class="contact-form"
+  data-contact-form
+  data-whatsapp-base-url={contact.whatsappBaseUrl}
+>
+  <div class="contact-form__grid">
+    <label class="contact-form__field" for="contact-name">
+      <span>Nombre completo</span>
+      <input
+        id="contact-name"
+        name="name"
+        type="text"
+        autocomplete="name"
+        required
+      />
+    </label>
+
+    <label class="contact-form__field" for="contact-phone">
+      <span>Teléfono</span>
+      <input
+        id="contact-phone"
+        name="phone"
+        type="tel"
+        autocomplete="tel"
+        inputmode="tel"
+        required
+      />
+    </label>
+
+    <label class="contact-form__field" for="contact-email">
+      <span>
+        Correo electrónico <small>Opcional</small>
+      </span>
+      <input
+        id="contact-email"
+        name="email"
+        type="email"
+        autocomplete="email"
+      />
+    </label>
+
+    <label class="contact-form__field" for="contact-location">
+      <span>Zona de interés</span>
+      <select id="contact-location" name="location" required>
+        <option value="">Selecciona una opción</option>
+        {locations.map((location) => (
+          <option value={location.area}>{location.displayName}</option>
+        ))}
+      </select>
+    </label>
+
+    <label
+      class="contact-form__field contact-form__field--full"
+      for="contact-message"
+    >
+      <span>
+        Mensaje <small>No incluyas datos financieros sensibles</small>
+      </span>
+      <textarea id="contact-message" name="message" rows="5"></textarea>
+    </label>
+  </div>
+
+  <label class="contact-form__privacy" for="contact-privacy">
+    <input id="contact-privacy" name="privacy" type="checkbox" required />
+    <span>
+      He leído el <a href="/aviso-de-privacidad/">aviso de privacidad</a> y
+      autorizo el uso de mis datos para preparar y atender mi solicitud por
+      WhatsApp.
+    </span>
+  </label>
+
+  <button class="contact-form__submit" type="submit">
+    Enviar solicitud por WhatsApp
+  </button>
+
+  <p
+    class="contact-form__status"
+    data-contact-form-status
+    aria-live="polite"
+  ></p>
+</form>
+
+<script>
+  function initializeContactForms(): void {
+    const forms = document.querySelectorAll<HTMLFormElement>(
+      '[data-contact-form]',
+    );
+
+    forms.forEach((form) => {
+      if (form.dataset.contactFormReady === 'true') {
+        return;
+      }
+
+      form.dataset.contactFormReady = 'true';
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        if (!form.reportValidity()) {
+          return;
+        }
+
+        const formData = new FormData(form);
+        const name = String(formData.get('name') ?? '').trim();
+        const phone = String(formData.get('phone') ?? '').trim();
+        const email = String(formData.get('email') ?? '').trim();
+        const location = String(formData.get('location') ?? '').trim();
+        const message = String(formData.get('message') ?? '').trim();
+        const status = form.querySelector<HTMLElement>(
+          '[data-contact-form-status]',
+        );
+        const whatsappBaseUrl = form.dataset.whatsappBaseUrl;
+
+        const lines = [
+          `Hola, soy ${name}. Quiero consultar una gestión inmobiliaria con Diego Ochoa.`,
+          `Teléfono: ${phone}`,
+          email ? `Correo: ${email}` : '',
+          `Zona de interés: ${location}`,
+          message ? `Mensaje: ${message}` : '',
+        ].filter(Boolean);
+
+        if (!whatsappBaseUrl) {
+          if (status) {
+            status.textContent =
+              'No fue posible preparar tu solicitud. Intenta nuevamente.';
+          }
+
+          return;
+        }
+
+        if (status) {
+          status.textContent = 'Abriendo WhatsApp con tu solicitud…';
+        }
+
+        window.dispatchEvent(
+          new CustomEvent('site:analytics', {
+            detail: {
+              name: 'form_submit',
+              parameters: {
+                form_name: 'contacto',
+                contact_method: 'whatsapp',
+              },
+            },
+          }),
+        );
+
+        window.location.assign(
+          `${whatsappBaseUrl}?text=${encodeURIComponent(lines.join('\n'))}`,
+        );
+      });
+    });
+  }
+
+  initializeContactForms();
+  document.addEventListener('astro:page-load', initializeContactForms);
+</script>
+
+<style>
+  .contact-form {
+    display: grid;
+    gap: var(--spacing-5);
+  }
+
+  .contact-form__grid {
+    display: grid;
+    gap: var(--spacing-4);
+  }
+
+  .contact-form__field {
+    display: grid;
+    gap: var(--spacing-2);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-label);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-label);
+  }
+
+  .contact-form__field small {
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-regular);
+  }
+
+  .contact-form input:not([type='checkbox']),
+  .contact-form select,
+  .contact-form textarea {
+    width: 100%;
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    color: var(--color-text-primary);
+    background: var(--color-background-canvas);
+    font: inherit;
+  }
+
+  .contact-form input:not([type='checkbox']),
+  .contact-form select {
+    min-height: 3rem;
+    padding-inline: var(--spacing-3);
+  }
+
+  .contact-form textarea {
+    min-height: 8rem;
+    padding: var(--spacing-3);
+    resize: vertical;
+  }
+
+  .contact-form input:focus-visible,
+  .contact-form select:focus-visible,
+  .contact-form textarea:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-border-focus);
+    outline-offset: 2px;
+  }
+
+  .contact-form__privacy {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-2);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-body-small);
+  }
+
+  .contact-form__privacy input {
+    width: 1rem;
+    height: 1rem;
+    margin: 0.125rem 0 0;
+    accent-color: var(--color-action-secondary);
+  }
+
+  .contact-form__privacy a {
+    color: var(--color-text-link);
+  }
+
+  .contact-form__submit {
+    min-height: 3rem;
+    padding: var(--spacing-3) var(--spacing-5);
+    border: 0;
+    border-radius: var(--radius-md);
+    color: var(--color-text-on-coral);
+    background: var(--color-action-whatsapp);
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-label);
+    cursor: pointer;
+  }
+
+  .contact-form__submit:hover {
+    background-color: var(--color-action-whatsapp-hover);
+  }
+
+  .contact-form__status {
+    min-height: var(--line-height-body-small);
+    margin: calc(-1 * var(--spacing-3)) 0 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-body-small);
+  }
+
+  @media (min-width: 48rem) {
+    .contact-form__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .contact-form__field--full {
+      grid-column: 1 / -1;
+    }
+
+    .contact-form__submit {
+      width: fit-content;
+      min-width: 18rem;
+    }
+  }
+</style>

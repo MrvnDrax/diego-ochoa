@@ -1,0 +1,188 @@
+---
+import WhatsAppIcon from '@components/brand/WhatsAppIcon.astro';
+import ContentSection from '@components/patterns/ContentSection.astro';
+import Button from '@components/ui/Button.astro';
+import { contact } from '@data/contact';
+import { locations } from '@data/locations';
+import { generalWhatsAppHref } from '@data/whatsapp-messages';
+
+interface Props {
+  id?: string;
+  eyebrow?: string;
+  heading?: string;
+  description?: string;
+  whatsappHref?: string;
+  class?: string;
+  light?: boolean;
+}
+
+const {
+  id = 'agenda-tu-valoracion',
+  eyebrow = 'Da el siguiente paso',
+  heading = 'Empieza por entender tus opciones.',
+  description = 'Una conversación inicial ayuda a ordenar tus dudas. Cuéntanos qué operación o gestión tienes en mente.',
+  whatsappHref = generalWhatsAppHref,
+  class: className,
+  light = false,
+}: Props = Astro.props;
+---
+
+<ContentSection
+  id={id}
+  eyebrow={eyebrow}
+  eyebrowTone={light ? 'brand' : 'inverse'}
+  heading={heading}
+  description={description}
+  tone={light ? 'canvas' : 'strong'}
+  spacing="large"
+  shape="none"
+  align="start"
+  class:list={['cta-section', light && 'cta-section--light', className]}
+>
+  <div class="cta-section__booking">
+    <p class="cta-section__booking-title">Cuéntanos tu caso</p>
+    <p class="cta-section__booking-copy">
+      Escríbenos y confirma cómo podemos orientarte.
+    </p>
+    <Button
+      href={whatsappHref}
+      target="_blank"
+      variant="primary"
+      ariaLabel="Consultar una gestión por WhatsApp"
+    >
+      <WhatsAppIcon slot="icon-start" />
+      Escribir por WhatsApp
+    </Button>
+    <a class="cta-section__phone" href={contact.phoneHref}>
+      <span>
+        O llama al <strong>{contact.phoneDisplay}</strong>
+      </span>
+    </a>
+    <p class="cta-section__locations">
+      {locations.map((location) => location.area).join(' · ')}
+    </p>
+  </div>
+</ContentSection>
+
+<style>
+  :global(.cta-section) {
+    border-top: 4px solid #f26c4f;
+    background: #1b325f;
+  }
+
+  :global(.cta-section--light.cta-section) {
+    background: #fff;
+    border-top: 0;
+  }
+  :global(.cta-section--light .section-header__heading) {
+    color: #1b325f;
+  }
+  :global(.cta-section--light .section-header__description) {
+    color: #53677d;
+  }
+  :global(.cta-section--light .cta-section__booking) {
+    background: #e9f2f9;
+    border: 0;
+  }
+
+  :global(.cta-section .content-section__container) {
+    align-items: center;
+    gap: 2.5rem;
+  }
+
+  :global(.cta-section .content-section__header) {
+    max-width: 42rem;
+  }
+
+  :global(.cta-section:not(.cta-section--light) .section-header__heading) {
+    color: #fff;
+    text-wrap: balance;
+  }
+
+  :global(.cta-section:not(.cta-section--light) .section-header__description) {
+    max-width: 35rem;
+    color: #d4e3f1;
+  }
+
+  .cta-section__booking {
+    display: grid;
+    gap: 1rem;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    border: 1px solid #7893b9;
+    border-radius: var(--radius-md);
+    background: #fff;
+    color: #1b325f;
+  }
+
+  .cta-section__booking p {
+    margin: 0;
+  }
+
+  .cta-section__booking-title {
+    font-family: var(--font-family-heading);
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .cta-section__booking-copy {
+    color: #51637b;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .cta-section__booking :global(.button) {
+    width: 100%;
+    min-width: 0;
+    min-height: 3.25rem;
+    margin-top: 0.25rem;
+    border-radius: var(--radius-md);
+    color: var(--color-text-on-coral);
+    background: var(--color-action-whatsapp);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .cta-section__booking :global(.button:hover),
+  .cta-section__booking :global(.button:focus-visible) {
+    color: var(--color-text-on-coral);
+    background: var(--color-action-whatsapp-hover);
+  }
+
+  .cta-section__phone {
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: #1b325f;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    text-decoration: none;
+  }
+
+  .cta-section__phone strong {
+    white-space: nowrap;
+  }
+
+  .cta-section__phone:hover strong {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .cta-section__booking .cta-section__locations {
+    padding-top: 1rem;
+    border-top: 1px solid #d8e2ed;
+    color: #51637b;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  @media (min-width: 56rem) {
+    :global(.cta-section .content-section__container) {
+      grid-template-columns: minmax(0, 1.15fr) minmax(20rem, 0.85fr);
+      gap: clamp(2.5rem, 5vw, 5rem);
+    }
+  }
+</style>

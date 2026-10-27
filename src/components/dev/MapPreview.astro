@@ -1,0 +1,73 @@
+---
+import GoogleMapEmbed from '@components/maps/GoogleMapEmbed.astro';
+import { locations } from '@data/locations';
+---
+
+<section class="map-preview" aria-labelledby="map-preview-title">
+  <header class="map-preview__header">
+    <p>Integración externa</p>
+    <h2 id="map-preview-title">Mapas de ubicaciones</h2>
+    <p>
+      Verificación temporal de las ubicaciones incrustadas desde Google Maps.
+    </p>
+  </header>
+
+  <div class="map-preview__grid">
+    {locations.map((location) => (
+      <article class="map-preview__item">
+        <h3>{location.area}</h3>
+
+        <GoogleMapEmbed
+          src={location.mapEmbedUrl}
+          title={`Mapa de la sede ${location.area}`}
+        />
+
+        <a href={location.mapUrl} target="_blank" rel="noopener noreferrer">
+          Ver ubicación en Google Maps
+        </a>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .map-preview {
+    display: grid;
+    gap: var(--spacing-8);
+    margin-block-start: var(--spacing-12);
+  }
+
+  .map-preview__header {
+    display: grid;
+    gap: var(--spacing-2);
+  }
+
+  .map-preview__header > *,
+  .map-preview__item > * {
+    margin: 0;
+  }
+
+  .map-preview__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    gap: var(--spacing-6);
+  }
+
+  .map-preview__item {
+    display: grid;
+    gap: var(--spacing-4);
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background-color: var(--color-background-surface);
+  }
+
+  .map-preview__item h3,
+  .map-preview__item a {
+    margin-inline: var(--spacing-4);
+  }
+
+  .map-preview__item a {
+    margin-block-end: var(--spacing-4);
+    font-weight: 600;
+  }
+</style>

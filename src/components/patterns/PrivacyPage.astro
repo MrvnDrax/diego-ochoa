@@ -1,0 +1,359 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+import Container from '@components/ui/Container.astro';
+import Icon from '@components/ui/Icon.astro';
+import SiteLayout from '@layouts/SiteLayout.astro';
+
+interface Props {
+  page: CollectionEntry<'pages'>;
+}
+
+const { page }: Props = Astro.props;
+type PageSection = NonNullable<typeof page.data.sections>[number];
+type DetailedPageSection = Extract<PageSection, { paragraphs: string[] }>;
+
+const sections = (page.data.sections ?? []).filter(
+  (section): section is DetailedPageSection => 'paragraphs' in section,
+);
+---
+
+<SiteLayout
+  title={page.data.title}
+  description={page.data.description}
+  canonicalPath="/aviso-de-privacidad/"
+  noindex={page.data.noindex}
+  pageType="WebPage"
+  mainClass="privacy-page"
+>
+  <section class="section privacy-hero" aria-labelledby="privacy-title">
+    <Container class="privacy-hero__inner">
+      <p class="privacy-hero__eyebrow">{page.data.eyebrow}</p>
+      <h1 id="privacy-title">{page.data.heading}</h1>
+      <p class="privacy-hero__intro">{page.data.intro}</p>
+      {page.data.updatedAt && (
+        <p class="privacy-hero__date">
+          <Icon name="file-text" size="small" />
+          Última actualización: {page.data.updatedAt}
+        </p>
+      )}
+    </Container>
+  </section>
+
+  <section class="section privacy-content" aria-label="Contenido del aviso">
+    <Container class="privacy-content__layout">
+      <aside class="privacy-index">
+        <p class="privacy-index__label">EN ESTA PÁGINA</p>
+        <nav aria-label="Índice del aviso de privacidad">
+          <ol>
+            {sections.map((section, index) => (
+              <li>
+                <a href={'#' + section.id}>
+                  <span aria-hidden="true">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  {section.heading}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      </aside>
+
+      <article class="privacy-article">
+        <div class="privacy-summary">
+          <div class="privacy-summary__icon" aria-hidden="true">
+            <Icon name="file-text" size="large" />
+          </div>
+          <div>
+            <p class="privacy-summary__label">AVISO INTEGRAL</p>
+            <h2>Cómo se tratan tus datos en este sitio</h2>
+            <p>
+              El formulario prepara tu solicitud dentro de tu navegador. El
+              sitio no la guarda en una base de datos propia; al continuar, se
+              abre WhatsApp para que revises y envíes el mensaje.
+            </p>
+          </div>
+        </div>
+
+        <div class="privacy-sections">
+          {sections.map((section, index) => (
+            <section id={section.id} class="privacy-section">
+              <p class="privacy-section__number" aria-hidden="true">
+                {String(index + 1).padStart(2, '0')}
+              </p>
+              <div class="privacy-section__content">
+                <h2>{section.heading}</h2>
+                {section.paragraphs.map((paragraph) => (
+                  <p>{paragraph}</p>
+                ))}
+                {section.bullets && section.bullets.length > 0 && (
+                  <ul>
+                    {section.bullets.map((item) => (
+                      <li>{item}</li>
+                    ))}
+                  </ul>
+                )}
+                {section.links && section.links.length > 0 && (
+                  <div class="privacy-section__links">
+                    {section.links.map((link) => (
+                      <a
+                        href={link.href}
+                        target={link.external ? '_blank' : undefined}
+                        rel={link.external ? 'noopener noreferrer' : undefined}
+                        aria-label={
+                          link.external
+                            ? `${link.label} (se abre en una pestaña nueva)`
+                            : undefined
+                        }
+                      >
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </section>
+          ))}
+        </div>
+
+        <p class="privacy-article__closing">
+          Este aviso se refiere al sitio web y al primer contacto digital. Cualquier servicio posterior puede requerir un acuerdo y un aviso adicional según el alcance de la gestión.
+        </p>
+      </article>
+    </Container>
+  </section>
+</SiteLayout>
+
+<style>
+  .privacy-hero {
+    color: var(--color-text-inverse);
+    background: var(--color-action-primary);
+  }
+
+  .privacy-hero__inner {
+    display: grid;
+    max-width: 55rem;
+    justify-items: center;
+    gap: var(--spacing-4);
+    padding-block: var(--spacing-16);
+    text-align: center;
+  }
+
+  .privacy-hero__eyebrow,
+  .privacy-index__label,
+  .privacy-summary__label {
+    color: var(--color-brand-clinical-400);
+    font-size: var(--font-size-eyebrow);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-eyebrow);
+  }
+
+  .privacy-hero h1 {
+    max-width: 15ch;
+    font-size: var(--font-size-heading-1-mobile);
+    line-height: var(--line-height-heading-1-mobile);
+  }
+
+  .privacy-hero__intro {
+    max-width: 44rem;
+    color: var(--color-brand-clinical-200);
+    font-size: var(--font-size-body-large);
+    line-height: var(--line-height-body-large);
+  }
+
+  .privacy-hero__date {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-2) var(--spacing-4);
+    border: 1px solid rgb(181 232 195 / 45%);
+    border-radius: var(--radius-full);
+    color: var(--color-text-inverse);
+    font-size: var(--font-size-body-small);
+  }
+
+  .privacy-content {
+    background: var(--color-background-subtle);
+  }
+
+  .privacy-content__layout {
+    display: grid;
+    gap: var(--spacing-8);
+    padding-block: var(--spacing-12) var(--spacing-20);
+  }
+
+  .privacy-index {
+    align-self: start;
+    padding: var(--spacing-5);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-xl);
+    background: var(--color-background-canvas);
+  }
+
+  .privacy-index ol {
+    display: grid;
+    gap: var(--spacing-1);
+    margin: var(--spacing-4) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .privacy-index a {
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: var(--spacing-2);
+    padding-block: var(--spacing-2);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-body-small);
+    text-decoration: none;
+  }
+
+  .privacy-index a:hover {
+    color: var(--color-text-link);
+  }
+
+  .privacy-index a span {
+    color: var(--color-text-secondary);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .privacy-article {
+    min-width: 0;
+  }
+
+  .privacy-summary {
+    display: grid;
+    gap: var(--spacing-4);
+    padding: var(--spacing-6);
+    border-radius: var(--radius-xl);
+    color: var(--color-text-inverse);
+    background: var(--color-background-strong);
+  }
+
+  .privacy-summary__icon {
+    display: grid;
+    width: 3.5rem;
+    height: 3.5rem;
+    place-items: center;
+    border-radius: var(--radius-full);
+    color: var(--color-text-primary);
+    background: var(--color-background-brand-subtle);
+  }
+
+  .privacy-summary h2 {
+    margin-top: var(--spacing-2);
+    font-size: var(--font-size-heading-3-mobile);
+    line-height: var(--line-height-heading-3-mobile);
+  }
+
+  .privacy-summary p:last-child {
+    margin-top: var(--spacing-3);
+    color: var(--color-brand-clinical-200);
+  }
+
+  .privacy-sections {
+    margin-top: var(--spacing-5);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-xl);
+    background: var(--color-background-canvas);
+  }
+
+  .privacy-section {
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    gap: var(--spacing-3);
+    padding: var(--spacing-6);
+    scroll-margin-top: 7rem;
+  }
+
+  .privacy-section + .privacy-section {
+    border-top: 1px solid var(--color-border-default);
+  }
+
+  .privacy-section__number {
+    color: var(--color-brand-clinical-400);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .privacy-section__content {
+    display: grid;
+    gap: var(--spacing-3);
+    color: var(--color-text-secondary);
+  }
+
+  .privacy-section h2 {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-heading-4-mobile);
+    line-height: var(--line-height-heading-4-mobile);
+  }
+
+  .privacy-section ul {
+    display: grid;
+    gap: var(--spacing-2);
+    margin: 0;
+    padding-left: var(--spacing-5);
+  }
+
+  .privacy-section__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2) var(--spacing-4);
+  }
+
+  .privacy-section__links a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-1);
+    color: var(--color-text-link);
+    font-weight: var(--font-weight-semibold);
+    text-underline-offset: 0.2em;
+  }
+
+  .privacy-article__closing {
+    margin-top: var(--spacing-5);
+    padding: var(--spacing-5);
+    border-left: 3px solid var(--color-brand-clinical-400);
+    color: var(--color-text-primary);
+    background: var(--color-background-brand-subtle);
+  }
+
+  @media (min-width: 48rem) {
+    .privacy-hero__inner {
+      padding-block: var(--spacing-20);
+    }
+
+    .privacy-hero h1 {
+      font-size: var(--font-size-heading-1-desktop);
+      line-height: var(--line-height-heading-1-desktop);
+    }
+
+    .privacy-summary {
+      grid-template-columns: auto 1fr;
+      padding: var(--spacing-8);
+    }
+
+    .privacy-section {
+      grid-template-columns: 3rem minmax(0, 1fr);
+      padding: var(--spacing-8);
+    }
+
+    .privacy-section h2 {
+      font-size: var(--font-size-heading-4-desktop);
+      line-height: var(--line-height-heading-4-desktop);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .privacy-content__layout {
+      grid-template-columns: minmax(14rem, 17rem) minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .privacy-index {
+      position: sticky;
+      top: 7rem;
+    }
+  }
+</style>

@@ -1,0 +1,187 @@
+---
+import { getCollection, render } from 'astro:content';
+const selected = [
+  'primera-consulta',
+  'estudios-previos',
+  'como-agendar',
+  'consulta-en-linea',
+];
+const entries = (await getCollection('faqs'))
+  .filter((e) => selected.some((id) => e.id.endsWith(id)))
+  .sort(
+    (a, b) =>
+      selected.findIndex((id) => a.id.endsWith(id)) -
+      selected.findIndex((id) => b.id.endsWith(id)),
+  );
+const faqs = await Promise.all(
+  entries.map(async (entry) => ({ entry, ...(await render(entry)) })),
+);
+---
+
+<section class="home-questions" id="preguntas-frecuentes">
+  <div class="container home-questions__grid">
+    <header>
+      <p>Antes de empezar</p>
+      <h2>Respuestas antes de tu gestión</h2>
+      <a href="/preguntas-frecuentes">Ver todas las preguntas</a>
+    </header>
+    <div class="home-questions__list">
+      {faqs.map(({ entry, Content }) => (
+        <details data-home-question>
+          <summary>
+            {entry.data.question}
+            <span aria-hidden="true">+</span>
+          </summary>
+          <div class="home-questions__answer" data-details-answer>
+            <Content />
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+<script>
+  import { animateDetails } from '../../scripts/animated-details';
+  function initializeHomeQuestions() {
+    const roots = document.querySelectorAll<HTMLDetailsElement>(
+      '[data-home-question]:not([data-animated-details])',
+    );
+    if (!roots.length) return;
+    const cleanups = Array.from(roots, animateDetails);
+    const list = roots[0]?.closest('.home-questions__list');
+    const closeOtherQuestions = (event: Event) => {
+      roots.forEach((details) => {
+        if (details !== event.target && details.dataset.expanded === 'true') {
+          details.querySelector('summary')?.click();
+        }
+      });
+    };
+    list?.addEventListener('details:opening', closeOtherQuestions);
+    document.addEventListener(
+      'astro:before-swap',
+      () => {
+        list?.removeEventListener('details:opening', closeOtherQuestions);
+        cleanups.forEach((cleanup) => cleanup());
+      },
+      { once: true },
+    );
+  }
+  initializeHomeQuestions();
+  document.addEventListener('astro:page-load', initializeHomeQuestions);
+</script>
+<style>
+  .home-questions {
+    border-radius: var(--radius-xl);
+    background: #f7fafc;
+    padding-block: clamp(3.5rem, 6vw, 6rem);
+    color: #1b325f;
+  }
+  .home-questions__grid {
+    display: grid;
+    gap: 2rem;
+  }
+  header > p {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #37648c;
+    margin-bottom: 1rem;
+  }
+  h2 {
+    font-size: clamp(2rem, 3vw, 2.8rem);
+    font-weight: 500;
+    line-height: 1.18;
+    letter-spacing: -0.025em;
+  }
+  header a {
+    display: inline-block;
+    margin-top: 1.3rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-underline-offset: 0.3rem;
+  }
+  details {
+    padding-inline: 1.25rem;
+    border: 1px solid #cad8e6;
+    border-radius: var(--radius-md);
+    background: #fff;
+    transition:
+      background-color 280ms ease-out,
+      border-color 280ms ease-out,
+      box-shadow 280ms ease-out;
+  }
+  details[data-expanded='true'],
+  details[open]:not([data-animated-details]) {
+    background: #e9f2f9;
+    border-color: #91bada;
+    box-shadow: 0 0.5rem 1.5rem rgb(27 50 95 / 8%);
+  }
+  details + details {
+    margin-top: 0.75rem;
+  }
+  summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 1.5rem;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.3rem 0;
+    list-style: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.05rem;
+    line-height: 1.45;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary span {
+    position: relative;
+    display: block;
+    width: 1.5rem;
+    height: 1.5rem;
+    justify-self: end;
+    font-size: 0;
+    color: #37648c;
+    transform-origin: center;
+    transition: transform 260ms ease-out;
+  }
+  summary span::before,
+  summary span::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.875rem;
+    height: 1.5px;
+    border-radius: var(--radius-full);
+    background: currentColor;
+    content: '';
+    transform: translate(-50%, -50%);
+  }
+  summary span::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+  details[open]:not([data-animated-details]) summary span,
+  details[data-expanded='true'] summary span {
+    transform: rotate(45deg);
+  }
+  .home-questions__answer {
+    color: #53677d;
+    line-height: 1.7;
+    padding: 0 1.5rem 1.4rem 0;
+  }
+  .home-questions__answer :global(p + p) {
+    margin-top: 0.7rem;
+  }
+  @media (min-width: 56rem) {
+    .home-questions__grid {
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 3.5rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    details {
+      transition: none;
+    }
+  }
+</style>

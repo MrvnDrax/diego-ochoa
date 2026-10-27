@@ -1,0 +1,362 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import CtaSection from '@components/patterns/CtaSection.astro';
+import Button from '@components/ui/Button.astro';
+import Container from '@components/ui/Container.astro';
+import { getServiceVisual } from '@data/service-visuals';
+import { generalWhatsAppHref } from '@data/whatsapp-messages';
+import SiteLayout from '@layouts/SiteLayout.astro';
+
+interface Props {
+  page: CollectionEntry<'pages'>;
+}
+const { page }: Props = Astro.props;
+const services = (await getCollection('services')).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const otherReasons = [
+  {
+    title: 'Compraventa de vivienda',
+    text: 'Aclara documentos, precio y condiciones antes de firmar.',
+  },
+  {
+    title: 'Crédito para terreno',
+    text: 'Conoce los requisitos que podrían aplicar al predio y a tu perfil.',
+  },
+  {
+    title: 'Mejoras de vivienda',
+    text: 'Explora opciones de financiamiento y organiza tu proyecto.',
+  },
+  {
+    title: 'Revisión de documentos',
+    text: 'Identifica preguntas y pendientes antes de comprometerte.',
+  },
+  {
+    title: 'Seguimiento de trámites',
+    text: 'Mantén claridad sobre requisitos, respuestas y siguientes pasos.',
+  },
+  {
+    title: 'Orientación Infonavit',
+    text: 'Revisa etapas y documentos de una posible solicitud de crédito.',
+  },
+];
+---
+
+<SiteLayout
+  title={page.data.title}
+  description={page.data.description}
+  noindex={page.data.noindex}
+  pageType="CollectionPage"
+>
+  <section class="services-page__intro" aria-labelledby="services-title">
+    <Container>
+      <div class="services-page__intro-grid">
+        <div>
+          <p class="services-page__eyebrow">{page.data.eyebrow}</p>
+          <h1 id="services-title">
+            Decisiones inmobiliarias.
+            <br />
+            <span>El primer paso es conversar.</span>
+          </h1>
+          <p class="services-page__lead">{page.data.intro}</p>
+          <Button
+            href={generalWhatsAppHref}
+            target="_blank"
+            ariaLabel="Consultar una gestión con Diego Ochoa"
+          >
+            Consultar mi caso
+          </Button>
+        </div>
+        <aside
+          class="services-page__guide"
+          aria-label="Orientación para elegir un servicio"
+        >
+          <span class="services-page__guide-label">Tu proyecto inmobiliario</span>
+          <h2>No necesitas tener todo resuelto.</h2>
+          <p>
+            Cuéntanos qué buscas hacer. Podemos ayudarte a ordenar preguntas, documentos y opciones.
+          </p>
+          <a href="#servicios-principales">Explorar gestiones</a>
+        </aside>
+      </div>
+    </Container>
+  </section>
+
+  <section
+    id="servicios-principales"
+    class="services-page__catalog"
+    aria-labelledby="services-catalog-title"
+  >
+    <Container>
+      <header class="services-page__section-heading">
+        <p class="services-page__eyebrow">Servicios y gestiones</p>
+        <h2 id="services-catalog-title">Conoce las áreas de orientación</h2>
+      </header>
+      <div class="services-page__list">
+        {services.map((service) => {
+          const visual = getServiceVisual(
+            service.data.media.key,
+            service.data.media.alt,
+          );
+          return (
+            <article class="services-page__service">
+              <Image
+                src={visual.card.image}
+                alt={visual.card.alt}
+                loading="lazy"
+                class="services-page__image"
+              />
+              <div class="services-page__service-copy">
+                <p class="services-page__category">
+                  {service.data.page.category}
+                </p>
+                <h3>
+                  <a href={'/servicios/' + service.id + '/'}>
+                    {service.data.card.title}
+                  </a>
+                </h3>
+                <p>{service.data.card.summary}</p>
+                <a
+                  class="services-page__service-link"
+                  href={'/servicios/' + service.id + '/'}
+                  aria-label={
+                    'Conocer la gestión de ' + service.data.card.title
+                  }
+                >
+                  Conocer esta gestión
+                </a>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </Container>
+  </section>
+
+  <section class="services-page__other" aria-labelledby="other-reasons-title">
+    <Container>
+      <div class="services-page__other-grid">
+        <div>
+          <p class="services-page__eyebrow">También podemos orientarte</p>
+          <h2 id="other-reasons-title">Otras situaciones comunes</h2>
+          <p>
+            También podemos conversar sobre dudas de documentación, financiamiento y etapas de una operación inmobiliaria.
+          </p>
+        </div>
+        <ul>
+          {otherReasons.map((item) => (
+            <li>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Container>
+  </section>
+
+  <CtaSection
+    eyebrow="Atención especializada"
+    heading="¿No sabes qué atención necesitas?"
+    description="Cuéntanos qué quieres hacer y revisemos el siguiente paso de tu gestión."
+  />
+</SiteLayout>
+
+<style>
+  .services-page__intro {
+    background: #e9f2f9;
+    padding-block: clamp(3rem, 7vw, 6rem);
+    border-bottom: 1px solid #c8d7e6;
+  }
+  .services-page__intro-grid {
+    display: grid;
+    gap: 2.5rem;
+    align-items: end;
+  }
+  .services-page__eyebrow,
+  .services-page__guide-label {
+    margin: 0 0 1rem;
+    color: #1b325f;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  h1,
+  h2,
+  h3 {
+    color: #1b325f;
+    font-family: var(--font-family-heading);
+    margin: 0;
+  }
+  h1 {
+    max-width: 48rem;
+    font-size: clamp(2.2rem, 4.3vw, 4rem);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+  }
+  h1 span {
+    color: #3b597f;
+  }
+  .services-page__lead {
+    max-width: 43rem;
+    margin: 1.5rem 0 1.75rem;
+    color: #46576e;
+    font-size: 1.125rem;
+    line-height: 1.7;
+  }
+  .services-page__guide {
+    padding: 1.75rem;
+    border-top: 3px solid #f26c4f;
+    background: #fff;
+  }
+  .services-page__guide h2 {
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+  .services-page__guide p {
+    margin: 1rem 0;
+    color: #46576e;
+    line-height: 1.7;
+  }
+  .services-page__guide a {
+    display: flex;
+    gap: 1rem;
+    color: #1b325f;
+    font-weight: 700;
+    text-decoration: none;
+    padding-top: 1rem;
+    border-top: 1px solid #dce4ed;
+  }
+  .services-page__catalog {
+    background: #fff;
+    padding-block: clamp(3rem, 6vw, 5rem);
+  }
+  .services-page__section-heading {
+    margin-bottom: 2.5rem;
+  }
+  .services-page__section-heading h2,
+  .services-page__other h2 {
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+  }
+  .services-page__list {
+    display: grid;
+    gap: 2rem;
+  }
+  .services-page__service {
+    display: grid;
+    gap: 1.25rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #d7e1ec;
+  }
+  .services-page__image {
+    width: 100%;
+    height: 13rem;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+  }
+  .services-page__service-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .services-page__category {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0 0 0.65rem;
+    color: #52647c;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .services-page__service h3 {
+    font-size: 1.5rem;
+    line-height: 1.25;
+  }
+  .services-page__service h3 a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .services-page__service h3 a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .services-page__service-copy > p:not(.services-page__category) {
+    color: #46576e;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    margin: 0.8rem 0 1rem;
+  }
+  .services-page__service-link {
+    display: flex;
+    width: 100%;
+    gap: 1rem;
+    justify-content: space-between;
+    color: #1b325f;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    margin-top: auto;
+  }
+  .services-page__other {
+    background: #e9f2f9;
+    padding-block: clamp(3rem, 6vw, 5rem);
+  }
+  .services-page__other-grid {
+    display: grid;
+    gap: 2rem;
+  }
+  .services-page__other p {
+    color: #46576e;
+    line-height: 1.7;
+  }
+  .services-page__other ul {
+    display: grid;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .services-page__other li {
+    border-top: 1px solid #bfcede;
+    padding-top: 1rem;
+  }
+  .services-page__other h3 {
+    font-size: 1rem;
+  }
+  .services-page__other li p {
+    margin: 0.4rem 0 0;
+    font-size: 0.9rem;
+  }
+  @media (min-width: 48rem) {
+    .services-page__intro-grid {
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      gap: 3rem;
+    }
+    .services-page__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2.5rem;
+    }
+    .services-page__other ul {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 75rem) {
+    .services-page__service {
+      grid-template-columns: 10rem minmax(0, 1fr);
+    }
+    .services-page__image {
+      height: 13.5rem;
+    }
+    .services-page__other-grid {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: 4rem;
+    }
+  }
+</style>

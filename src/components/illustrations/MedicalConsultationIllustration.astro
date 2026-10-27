@@ -1,0 +1,72 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className }: Props = Astro.props;
+---
+
+<svg
+  class:list={['medical-consultation-illustration', className]}
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 340 390"
+  fill="none"
+  preserveAspectRatio="xMidYMid meet"
+  aria-hidden="true"
+  focusable="false"
+>
+  <g data-faq-wave-layer="accent">
+    <path
+      d="M170 321C234.065 321 286 269.065 286 205C286 140.935 234.065 89 170 89C105.935 89 54 140.935 54 205C54 269.065 105.935 321 170 321Z"
+      fill="#65B8A6"
+      fill-opacity="0.48"
+    />
+  </g>
+
+  <g
+    data-faq-wave-layer="figure"
+    stroke="#F7F4EE"
+    stroke-width="3.2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M119 92V76C119 62 130 51 144 51H181C195 51 206 62 206 76V92" />
+    <path d="M119 92H206" />
+    <path d="M147 72H178" />
+    <path d="M162 57V87" />
+    <path d="M123 92V141C123 174 139 193 163 193C187 193 203 174 203 141V92" />
+    <path d="M123 112C137 113 151 110 164 104C174 99 183 93 190 87L203 101" />
+    <path d="M123 114C113 111 106 118 106 129C106 140 113 147 123 144" />
+    <path d="M203 114C213 111 220 118 220 129C220 140 213 147 203 144" />
+    <path d="M143 190V207L163 222L183 207V190" />
+    <path d="M143 203L112 215C87 225 75 248 75 280V310" />
+    <path d="M183 203L214 215C239 225 251 248 251 280V310" />
+    <path d="M112 215L129 310" />
+    <path d="M214 215L197 310" />
+    <path d="M139.001 215C131.001 239 130.001 258 137.001 274" />
+    <path d="M187 215C195 239 196 258 189 274" />
+    <path d="M137 274V294" />
+    <path d="M189 274V283" />
+    <path d="M189 304C195.075 304 200 299.075 200 293C200 286.925 195.075 282 189 282C182.925 282 178 286.925 178 293C178 299.075 182.925 304 189 304Z" />
+    <path d="M137 294H128V268C128 258 136 250 146 250C156 250 164 258 164 268V294H155" />
+    <path d="M221 110H302V171H232L217 184V171H221V110Z" />
+    <path d="M239 129H284" />
+    <path d="M239 150H273" />
+    <path d="M251 310V235" />
+    <path d="M42 310H298L292 329C289 339 281 345 271 345H69C59 345 51 339 48 329L42 310Z" />
+  </g>
+</svg>
+
+<style>
+  .medical-consultation-illustration {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .medical-consultation-illustration [data-faq-wave-layer] {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+</style>

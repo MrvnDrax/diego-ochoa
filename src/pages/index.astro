@@ -1,0 +1,13 @@
+---
+import { getEntry } from 'astro:content';
+
+import HomePage from '@components/patterns/HomePage.astro';
+
+const page = await getEntry('pages', 'home');
+
+if (!page) {
+  throw new Error('No se encontró el contenido de la página de inicio.');
+}
+---
+
+<HomePage page={page} />

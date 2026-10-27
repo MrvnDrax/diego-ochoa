@@ -1,0 +1,23 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+
+import ServiceDetailPage from '@components/patterns/ServiceDetailPage.astro';
+
+export async function getStaticPaths() {
+  const services = await getCollection('services');
+
+  return services.map((service) => ({
+    params: { slug: service.id },
+    props: { serviceId: service.id },
+  }));
+}
+
+const { serviceId } = Astro.props as { serviceId: string };
+const service = await getEntry('services', serviceId);
+
+if (!service) {
+  throw new Error('Servicio no encontrado.');
+}
+---
+
+<ServiceDetailPage service={service} />

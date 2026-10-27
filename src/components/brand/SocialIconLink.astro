@@ -1,0 +1,53 @@
+---
+import instagramIcon from '@assets/social/instagram.svg';
+import facebookIcon from '@assets/social/facebook.svg';
+import tiktokIcon from '@assets/social/tiktok.svg';
+import youtubeIcon from '@assets/social/youtube.svg';
+import type { SocialLink } from '@data/social-links';
+
+interface Props { link: SocialLink }
+const { link }: Props = Astro.props;
+const icons = {
+  instagram: instagramIcon,
+  facebook: facebookIcon,
+  tiktok: tiktokIcon,
+  youtube: youtubeIcon,
+};
+---
+
+<a
+  class="social-icon-link"
+  href={link.href}
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label={`Abrir ${link.label}: ${link.handle} en una pestaña nueva`}
+  title={link.label}
+>
+  <img src={icons[link.platform].src} alt="" width="40" height="40" />
+</a>
+
+<style>
+  .social-icon-link {
+    display: grid;
+    width: 100%;
+    min-height: 4.25rem;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-lg);
+    background: #fff;
+    place-items: center;
+    transition: transform 180ms ease-out, border-color 180ms ease-out;
+  }
+  .social-icon-link:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-border-strong);
+  }
+  .social-icon-link img {
+    width: 2.5rem;
+    height: 2.5rem;
+    object-fit: contain;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .social-icon-link { transition: none; }
+  }
+</style>

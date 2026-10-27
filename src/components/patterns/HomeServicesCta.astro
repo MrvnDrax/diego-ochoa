@@ -1,0 +1,116 @@
+---
+import WhatsAppIcon from '@components/brand/WhatsAppIcon.astro';
+import { generalWhatsAppHref } from '@data/whatsapp-messages';
+---
+
+<section class="services-cta" aria-labelledby="services-cta-heading">
+  <div class="container">
+    <div class="services-cta__panel">
+      <div class="services-cta__copy">
+        <p class="services-cta__eyebrow">Tu siguiente paso</p>
+        <h2 id="services-cta-heading">Tu proyecto empieza por entenderlo.</h2>
+        <p>
+          Cuéntanos qué quieres hacer y revisemos los documentos y opciones que podrían aplicar.
+        </p>
+      </div>
+      <a
+        class="services-cta__action"
+        href={generalWhatsAppHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Consultar una gestión por WhatsApp (se abre en una pestaña nueva)"
+      >
+        <WhatsAppIcon />
+        Consultar mi caso
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .services-cta {
+    background: #fff;
+    padding-block: clamp(0.5rem, 2vw, 1.5rem);
+  }
+  .services-cta__panel {
+    display: grid;
+    align-items: center;
+    gap: 1.5rem;
+    padding: clamp(1.5rem, 4vw, 3.5rem);
+    border-radius: var(--radius-xl);
+    background: #1b325f;
+    color: #fff;
+  }
+  .services-cta__copy {
+    min-width: 0;
+  }
+  .services-cta__eyebrow {
+    margin-bottom: 0.75rem;
+    color: #b8d8ee;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  h2 {
+    max-width: 34rem;
+    font-family: var(--font-family-heading);
+    font-size: clamp(1.9rem, 3vw, 2.8rem);
+    font-weight: 500;
+    line-height: 1.13;
+    text-wrap: balance;
+  }
+  .services-cta__copy > p:last-child {
+    max-width: 34rem;
+    margin-top: 0.85rem;
+    color: #d4e3f1;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .services-cta__action {
+    display: inline-flex;
+    width: fit-content;
+    min-height: 3.25rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    padding: 0.85rem 1.25rem;
+    border-radius: var(--radius-md);
+    background: var(--color-action-whatsapp);
+    color: var(--color-text-on-coral);
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+  }
+  .services-cta__action:hover,
+  .services-cta__action:focus-visible {
+    background: var(--color-action-whatsapp-hover);
+    color: var(--color-text-on-coral);
+  }
+  .services-cta__action:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 3px;
+  }
+  .services-cta__action :global(svg) {
+    width: 1.35rem;
+    height: 1.35rem;
+    flex: none;
+  }
+  @media (min-width: 56rem) {
+    .services-cta__panel {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: clamp(2rem, 4vw, 4rem);
+    }
+  }
+  @media (max-width: 35rem) {
+    .services-cta__action {
+      width: 100%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .services-cta__action {
+      transition: none;
+    }
+  }
+</style>
